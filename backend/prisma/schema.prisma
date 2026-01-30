@@ -1,0 +1,258 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== ENUMS =====
+
+enum SubscriptionTier {
+  free
+  pro
+  enterprise
+}
+
+enum InvestmentRange {
+  under_10k
+  k10_50k
+  k50_100k
+  k100_500k
+  over_500k
+}
+
+enum IdeaStatus {
+  draft
+  generated
+  viewed
+  favorite
+  archived
+}
+
+enum GenerationStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum RiskTolerance {
+  low
+  medium
+  high
+}
+
+enum TargetMarketSize {
+  local
+  regional
+  national
+  international
+}
+
+enum InnovationLevel {
+  incremental
+  moderate
+  disruptive
+}
+
+enum EventType {
+  idea_generated
+  plan_generated
+  pdf_exported
+  idea_viewed
+  idea_favorited
+  idea_archived
+  user_registered
+  user_login
+}
+
+enum CompetitionLevel {
+  low
+  medium
+  high
+  very_high
+}
+
+// ===== MODELS =====
+
+model User {
+  id                 String           @id @default(uuid()) @db.Uuid
+  email              String           @unique
+  passwordHash       String           @map("password_hash")
+  fullName           String           @map("full_name")
+  createdAt          DateTime         @default(now()) @map("created_at")
+  updatedAt          DateTime         @updatedAt @map("updated_at")
+  subscriptionTier   SubscriptionTier @default(free) @map("subscription_tier")
+  apiRequestsCount   Int              @default(0) @map("api_requests_count")
+  lastRequestAt      DateTime?        @map("last_request_at")
+
+  // Relations
+  ideas              Idea[]
+  businessPlans      BusinessPlan[]
+  userInputs         UserInput[]
+  ideaComparisons    IdeaComparison[]
+  analytics          Analytics[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Idea {
+  id                 String          @id @default(uuid()) @db.Uuid
+  userId             String?         @map("user_id") @db.Uuid
+  title              String          @db.VarChar(200)
+  oneLiner           String          @map("one_liner") @db.VarChar(300)
+  industry           String
+  subIndustry        String?         @map("sub_industry")
+  difficultyScore    Int             @map("difficulty_score") @db.SmallInt
+  viabilityScore     Int             @map("viability_score") @db.SmallInt
+  initialInvestment  Decimal         @map("initial_investment") @db.Decimal(12, 2)
+  investmentRange    InvestmentRange @map("investment_range")
+  timelineMonths     Int             @map("timeline_months") @db.SmallInt
+  businessModel      String          @map("business_model")
+  targetMarket       String          @map("target_market")
+  status             IdeaStatus      @default(draft)
+  viewCount          Int             @default(0) @map("view_count")
+  createdAt          DateTime        @default(now()) @map("created_at")
+  updatedAt          DateTime        @updatedAt @map("updated_at")
+
+  // Relations
+  user               User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  businessPlan       BusinessPlan?
+  userInputs         UserInput[]
+  analytics          Analytics[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([industry])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("ideas")
+}
+
+model BusinessPlan {
+  id                    String            @id @default(uuid()) @db.Uuid
+  ideaId                String            @unique @map("idea_id") @db.Uuid
+  userId                String?           @map("user_id") @db.Uuid
+  mongodbContentId      String?           @map("mongodb_content_id")
+  generationStatus      GenerationStatus  @default(pending) @map("generation_status")
+  sectionsCompleted     Json?             @map("sections_completed") @db.JsonB
+  totalTokensUsed       Int               @default(0) @map("total_tokens_used")
+  generationTimeSeconds Int               @default(0) @map("generation_time_seconds")
+  exportedPdfUrl        String?           @map("exported_pdf_url")
+  lastExportedAt        DateTime?         @map("last_exported_at")
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
+
+  // Relations
+  idea                  Idea              @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  user                  User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  analytics             Analytics[]
+
+  @@index([ideaId])
+  @@index([generationStatus])
+  @@map("business_plans")
+}
+
+model UserInput {
+  id                     String            @id @default(uuid()) @db.Uuid
+  userId                 String?           @map("user_id") @db.Uuid
+  ideaId                 String?           @map("idea_id") @db.Uuid
+  industry               String
+  budgetMin              Decimal           @map("budget_min") @db.Decimal(12, 2)
+  budgetMax              Decimal           @map("budget_max") @db.Decimal(12, 2)
+  location               String
+  timelinePreference     String            @map("timeline_preference")
+  skills                 Json              @db.JsonB
+  resources              Json              @db.JsonB
+  riskTolerance          RiskTolerance     @map("risk_tolerance")
+  businessModelPreference Json             @map("business_model_preference") @db.JsonB
+  targetMarketSize       TargetMarketSize  @map("target_market_size")
+  innovationLevel        InnovationLevel   @map("innovation_level")
+  additionalNotes        String?           @map("additional_notes") @db.Text
+  createdAt              DateTime          @default(now()) @map("created_at")
+
+  // Relations
+  user                   User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  idea                   Idea?             @relation(fields: [ideaId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@map("user_inputs")
+}
+
+model IdeaComparison {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String?  @map("user_id") @db.Uuid
+  ideaIds         Json     @map("idea_ids") @db.JsonB
+  comparisonData  Json     @map("comparison_data") @db.JsonB
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
+  @@map("idea_comparisons")
+}
+
+model Analytics {
+  id             String        @id @default(uuid()) @db.Uuid
+  eventType      EventType     @map("event_type")
+  userId         String?       @map("user_id") @db.Uuid
+  ideaId         String?       @map("idea_id") @db.Uuid
+  businessPlanId String?       @map("business_plan_id") @db.Uuid
+  metadata       Json?         @db.JsonB
+  ipAddress      String?       @map("ip_address")
+  userAgent      String?       @map("user_agent")
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  // Relations
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  idea           Idea?         @relation(fields: [ideaId], references: [id], onDelete: SetNull)
+  businessPlan   BusinessPlan? @relation(fields: [businessPlanId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt(sort: Desc)])
+  @@index([eventType])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("analytics")
+}
+
+model Industry {
+  id                String           @id @default(uuid()) @db.Uuid
+  name              String           @unique
+  slug              String           @unique
+  description       String           @db.Text
+  avgStartupCost    Decimal          @map("avg_startup_cost") @db.Decimal(12, 2)
+  avgTimeToLaunch   Int              @map("avg_time_to_launch") @db.SmallInt
+  competitionLevel  CompetitionLevel @map("competition_level")
+  trendingScore     Int              @default(50) @map("trending_score") @db.SmallInt
+  iconName          String           @map("icon_name")
+  isActive          Boolean          @default(true) @map("is_active")
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@index([isActive, trendingScore(sort: Desc)])
+  @@map("industries")
+}
+
+model Template {
+  id              String   @id @default(uuid()) @db.Uuid
+  sectionName     String   @map("section_name")
+  industry        String?
+  templateContent String   @map("template_content") @db.Text
+  variables       Json     @db.JsonB
+  version         Int      @default(1)
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([sectionName])
+  @@index([industry, isActive])
+  @@map("templates")
+}
