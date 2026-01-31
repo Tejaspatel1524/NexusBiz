@@ -59,11 +59,14 @@ export interface BusinessIdea {
     investmentNeeded: string;
     potentialROI: string;
     timeline: string;
+    estimatedBudget?: string; // Optional budget estimate
 }
 
 export interface BusinessPlanDetails {
     id: string;
     title: string;
+    description?: string; // Optional description for context
+    industry?: string; // Optional industry for context
     executiveSummary: string;
     marketAnalysis: {
         overview: string;
