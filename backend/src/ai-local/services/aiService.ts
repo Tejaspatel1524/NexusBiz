@@ -1,4 +1,5 @@
 import OllamaClient from './ollamaClient';
+import GroqClient from './groqClient';
 import { ModelRouter, TaskType } from './modelRouter';
 import ConversationManager from './conversationManager';
 import VectorStore from '../rag/vectorStore';
@@ -23,19 +24,46 @@ import {
 } from '../prompts/systemPrompts';
 
 /**
+ * AI Provider type - supports Groq (cloud) and Ollama (local)
+ */
+type AIProvider = 'groq' | 'ollama' | 'auto';
+
+/**
  * Main Local AI Service
- * Orchestrates all AI operations using Ollama
+ * Orchestrates all AI operations using Groq (cloud) or Ollama (local)
  */
 class LocalAIService {
     private ollamaClient: OllamaClient;
+    private groqClient: GroqClient | null = null;
     private modelRouter: ModelRouter;
     private conversationManager: ConversationManager;
     private vectorStore: VectorStore;
     private responseCache: ResponseCache;
     private initialized: boolean = false;
+    private activeProvider: 'groq' | 'ollama' = 'ollama';
 
     constructor() {
         this.ollamaClient = new OllamaClient();
+
+        // Initialize Groq if API key is available
+        const groqApiKey = process.env.GROQ_API_KEY;
+        const providerConfig = (process.env.AI_PROVIDER || 'auto') as AIProvider;
+
+        if (groqApiKey && providerConfig !== 'ollama') {
+            try {
+                this.groqClient = new GroqClient({ apiKey: groqApiKey });
+                this.activeProvider = 'groq';
+                logger.info('Groq client initialized - using cloud AI');
+            } catch (error) {
+                logger.warn('Failed to initialize Groq, falling back to Ollama');
+                this.groqClient = null;
+                this.activeProvider = 'ollama';
+            }
+        } else {
+            logger.info('No GROQ_API_KEY found - using Ollama local AI');
+            this.activeProvider = 'ollama';
+        }
+
         this.modelRouter = new ModelRouter(this.ollamaClient);
         this.conversationManager = new ConversationManager(
             this.ollamaClient,
@@ -44,7 +72,7 @@ class LocalAIService {
         this.vectorStore = new VectorStore(this.ollamaClient);
         this.responseCache = new ResponseCache(3600000); // 1 hour cache
 
-        logger.info('Local AI Service created');
+        logger.info(`Local AI Service created (provider: ${this.activeProvider})`);
     }
 
     /**
@@ -57,23 +85,32 @@ class LocalAIService {
         }
 
         try {
-            logger.info('Initializing Local AI Service...');
+            logger.info(`Initializing AI Service with provider: ${this.activeProvider}...`);
 
-            // Check Ollama health
-            const isHealthy = await this.ollamaClient.healthCheck();
-            if (!isHealthy) {
-                throw new Error('Ollama is not running. Please start Ollama service.');
+            // Check active provider health
+            if (this.activeProvider === 'groq' && this.groqClient) {
+                const isHealthy = await this.groqClient.healthCheck();
+                if (!isHealthy) {
+                    logger.warn('Groq health check failed, falling back to Ollama');
+                    this.activeProvider = 'ollama';
+                } else {
+                    const models = await this.groqClient.listModels();
+                    logger.info(`Groq available models: ${models.slice(0, 5).join(', ')}...`);
+                }
             }
 
-            // List available models
-            const models = await this.ollamaClient.listModels();
-            logger.info(`Available models: ${models.join(', ')}`);
-
-            // TODO: Load knowledge base into vector store
-            // await this.loadKnowledgeBase();
+            // If using Ollama, check its health
+            if (this.activeProvider === 'ollama') {
+                const isHealthy = await this.ollamaClient.healthCheck();
+                if (!isHealthy) {
+                    throw new Error('Ollama is not running. Please start Ollama service.');
+                }
+                const models = await this.ollamaClient.listModels();
+                logger.info(`Ollama available models: ${models.join(', ')}`);
+            }
 
             this.initialized = true;
-            logger.info('Local AI Service initialized successfully');
+            logger.info(`AI Service initialized successfully (provider: ${this.activeProvider})`);
         } catch (error: any) {
             logger.error('Failed to initialize AI service:', error);
             throw error;
@@ -466,6 +503,11 @@ class LocalAIService {
      */
     getStats(): any {
         return {
+            activeProvider: this.activeProvider,
+            groq: this.groqClient ? {
+                healthy: true,
+                model: process.env.GROQ_MODEL || 'llama-3.2-3b-preview'
+            } : null,
             ollama: {
                 healthy: true,
                 baseUrl: this.ollamaClient.getConfig().baseUrl
@@ -478,11 +520,22 @@ class LocalAIService {
     }
 
     /**
-     * Health check
+     * Health check - checks active provider
      */
     async healthCheck(): Promise<boolean> {
+        if (this.activeProvider === 'groq' && this.groqClient) {
+            return await this.groqClient.healthCheck();
+        }
         return await this.ollamaClient.healthCheck();
+    }
+
+    /**
+     * Get active AI provider
+     */
+    getActiveProvider(): 'groq' | 'ollama' {
+        return this.activeProvider;
     }
 }
 
 export default LocalAIService;
+

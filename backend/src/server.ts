@@ -1,9 +1,10 @@
+// Load environment variables FIRST - must be before any other imports
+// that might use process.env values
 import dotenv from 'dotenv';
+dotenv.config();
+
 import app from './app';
 import logger from './middleware/logger';
-
-// Load environment variables
-dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 

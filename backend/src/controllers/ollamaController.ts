@@ -287,7 +287,7 @@ export const chat = async (req: Request, res: Response): Promise<void> => {
  * Get AI service statistics
  * GET /api/ai/ollama/stats
  */
-export const getServiceStats = async (req: Request, res: Response): Promise<void> => {
+export const getServiceStats = async (_req: Request, res: Response): Promise<void> => {
     try {
         const stats = aiService.getStats();
 
@@ -309,7 +309,7 @@ export const getServiceStats = async (req: Request, res: Response): Promise<void
  * Health check for Ollama service
  * GET /api/ai/ollama/health
  */
-export const healthCheck = async (req: Request, res: Response): Promise<void> => {
+export const healthCheck = async (_req: Request, res: Response): Promise<void> => {
     try {
         const isHealthy = await aiService.healthCheck();
 

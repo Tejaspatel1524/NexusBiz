@@ -9,13 +9,13 @@ import { GENERAL_ASSISTANT_SYSTEM } from '../prompts/systemPrompts';
  * Manages chat history, context, and state
  */
 class ConversationManager {
-  private ollamaClient: OllamaClient;
   private modelRouter: ModelRouter;
   private conversations: Map<string, ConversationContext>;
   private maxHistoryLength: number = 20; // Keep last 20 messages
 
-  constructor(ollamaClient: OllamaClient, modelRouter: ModelRouter) {
-    this.ollamaClient = ollamaClient;
+  constructor(_ollamaClient: OllamaClient, modelRouter: ModelRouter) {
+    // Note: ollamaClient is passed but not directly used here - 
+    // all LLM calls go through modelRouter which handles the client
     this.modelRouter = modelRouter;
     this.conversations = new Map();
     logger.info('Conversation manager initialized');
