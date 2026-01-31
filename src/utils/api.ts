@@ -1,8 +1,10 @@
 /**
- * API Service for connecting to Ollama backend
+ * API Service for connecting to backend
+ * Uses relative URLs that work on both localhost and Vercel
  */
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// Use relative URL - works on localhost (via Vite proxy) and Vercel (serverless functions)
+const API_BASE_URL = '/api';
 
 export interface BusinessIdeaFromAPI {
     id: string;
