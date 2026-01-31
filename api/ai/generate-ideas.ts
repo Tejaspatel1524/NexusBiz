@@ -44,7 +44,7 @@ Generate exactly 3 unique ideas. Be creative and specific.`;
         log('Calling Groq API...');
 
         const completion = await groq.chat.completions.create({
-            model: process.env.GROQ_MODEL || 'llama-3.2-3b-preview',
+            model: process.env.GROQ_MODEL || 'llama-3.1-8b-instant',
             messages: [
                 {
                     role: 'system',
