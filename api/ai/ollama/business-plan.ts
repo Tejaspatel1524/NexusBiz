@@ -51,7 +51,7 @@ Be specific with numbers, dates, and actionable recommendations.`;
         log('Calling Groq API for business plan...');
 
         const completion = await groq.chat.completions.create({
-            model: (process.env.GROQ_MODEL || 'llama3-8b-8192').trim(),
+            model: (process.env.GROQ_MODEL || 'llama-3.1-8b-instant').trim(),
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: prompt }
