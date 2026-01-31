@@ -53,7 +53,7 @@ When providing business analysis, be:
         log('Calling Groq API for chat...');
 
         const completion = await groq.chat.completions.create({
-            model: process.env.GROQ_MODEL || 'llama-3.1-8b-instant',
+            model: (process.env.GROQ_MODEL || 'llama3-8b-8192').trim(),
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: message }
