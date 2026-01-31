@@ -194,9 +194,13 @@ export async function chat(
                             const jsonStr = line.replace('data: ', '');
                             const message: SSEMessage = JSON.parse(jsonStr);
 
-                            if (message.type === 'chunk' && onChunk) {
+                            if (message.type === 'chunk') {
+                                // Always accumulate response
                                 fullResponse += message.chunk || '';
-                                onChunk(message.chunk || '');
+                                // Call onChunk callback if provided
+                                if (onChunk) {
+                                    onChunk(message.chunk || '');
+                                }
                             } else if (message.type === 'done') {
                                 // Stream complete
                             } else if (message.type === 'error') {
