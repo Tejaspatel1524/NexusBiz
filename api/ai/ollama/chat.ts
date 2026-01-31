@@ -5,8 +5,7 @@ import Groq from 'groq-sdk';
  * AI Chat - Vercel Serverless Function
  * Matches frontend route: POST /api/ai/ollama/chat
  * 
- * NOTE: For Vercel, we return a simple JSON response instead of SSE streaming
- * because the frontend will handle both cases.
+ * Returns proper SSE format for frontend parsing
  */
 
 const log = (msg: string) => console.log(`[OllamaChat] ${new Date().toISOString()}: ${msg}`);
@@ -21,16 +20,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     log(`Chat request for conversation: ${conversationId}`);
 
     if (!message) {
-        return res.status(400).json({ success: false, error: 'Message is required' });
+        // Return SSE error format
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        return res.send(`data: ${JSON.stringify({ type: 'error', message: 'Message is required' })}\n\n`);
     }
 
     // Initialize Groq client
     const groqApiKey = process.env.GROQ_API_KEY;
     if (!groqApiKey) {
-        return res.status(500).json({
-            success: false,
-            error: 'GROQ_API_KEY not configured. Please add it to Vercel environment variables.'
-        });
+        res.setHeader('Content-Type', 'text/event-stream');
+        res.setHeader('Cache-Control', 'no-cache');
+        return res.send(`data: ${JSON.stringify({ type: 'error', message: 'GROQ_API_KEY not configured' })}\n\n`);
     }
 
     const groq = new Groq({ apiKey: groqApiKey });
@@ -59,29 +60,31 @@ When providing business analysis, be:
                 { role: 'user', content: message }
             ],
             temperature: 0.7,
-            max_tokens: 4096,  // Larger for detailed business content
+            max_tokens: 4096,
         });
 
         const response = completion.choices[0]?.message?.content || '';
         log(`Chat response length: ${response.length}`);
 
-        // For the frontend that expects SSE, we send the complete response
-        // The frontend will handle it as if it received all chunks at once
+        if (!response || response.length === 0) {
+            res.setHeader('Content-Type', 'text/event-stream');
+            res.setHeader('Cache-Control', 'no-cache');
+            return res.send(`data: ${JSON.stringify({ type: 'error', message: 'AI returned empty response' })}\n\n`);
+        }
+
+        // Send SSE format that frontend expects
+        // Using res.send() instead of res.write() for Vercel compatibility
         res.setHeader('Content-Type', 'text/event-stream');
         res.setHeader('Cache-Control', 'no-cache');
         res.setHeader('Connection', 'keep-alive');
 
-        // Send as SSE format that frontend expects
-        res.write(`data: ${JSON.stringify({ type: 'chunk', chunk: response })}\n\n`);
-        res.write(`data: ${JSON.stringify({ type: 'done' })}\n\n`);
-        res.end();
+        const sseResponse = `data: ${JSON.stringify({ type: 'chunk', chunk: response })}\n\ndata: ${JSON.stringify({ type: 'done' })}\n\n`;
+        return res.send(sseResponse);
 
     } catch (error: any) {
         log(`Error: ${error.message}`);
-
-        // Send error in SSE format
         res.setHeader('Content-Type', 'text/event-stream');
-        res.write(`data: ${JSON.stringify({ type: 'error', message: error.message })}\n\n`);
-        res.end();
+        res.setHeader('Cache-Control', 'no-cache');
+        return res.send(`data: ${JSON.stringify({ type: 'error', message: error.message })}\n\n`);
     }
 }
