@@ -26,6 +26,7 @@ import {
 import { useBusinessStore } from '../store/useBusinessStore';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
+import { generateBusinessPlanPDF } from '../utils/pdfExport';
 
 const BusinessPlan: React.FC = () => {
     useParams();
@@ -77,7 +78,11 @@ const BusinessPlan: React.FC = () => {
                             <p className="text-gray-200">Comprehensive Architectural Specification</p>
                         </div>
                     </div>
-                    <Button variant="outline" className="shrink-0 border-white hover:bg-white hover:text-black">
+                    <Button
+                        variant="outline"
+                        className="shrink-0 border-white hover:bg-white hover:text-black"
+                        onClick={() => generateBusinessPlanPDF(selectedPlan)}
+                    >
                         <Download size={18} className="mr-2" /> Export to PDF
                     </Button>
                 </div>
