@@ -29,7 +29,7 @@ const App: React.FC = () => {
   return (
     <LanguageProvider>
       <Router>
-        <div className="min-h-screen bg-black text-white selection:bg-blue selection:text-white">
+        <div className="min-h-screen bg-theme-primary text-theme-primary selection:bg-indigo-500 selection:text-white transition-colors duration-300">
           <Navbar />
           <main>
             <Routes>

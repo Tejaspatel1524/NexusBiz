@@ -8,10 +8,10 @@ import {
     Settings,
     ArrowRight,
     Globe,
-    Briefcase
+    Briefcase,
+    Sparkles
 } from 'lucide-react';
-import Button from '../components/common/Button';
-import Card from '../components/common/Card';
+import LiquidBackground from '../components/common/LiquidBackground';
 
 const Landing: React.FC = () => {
     const navigate = useNavigate();
@@ -21,31 +21,36 @@ const Landing: React.FC = () => {
             id: 'ai-powered-ideas',
             title: 'AI-Powered Ideas',
             description: 'Advanced algorithms curate personalized business concepts based on your market potential.',
-            icon: Zap
+            icon: Zap,
+            gradient: 'from-indigo-500 to-purple-500'
         },
         {
             id: 'complete-business-plans',
             title: 'Complete Business Plans',
             description: 'Go from concept to execution with comprehensive structural frameworks and strategies.',
-            icon: Target
+            icon: Target,
+            gradient: 'from-purple-500 to-pink-500'
         },
         {
             id: 'financial-projections',
             title: 'Financial Projections',
             description: 'Data-driven forecasting for revenue, expenses, and profitability over a 3-year horizon.',
-            icon: BarChart3
+            icon: BarChart3,
+            gradient: 'from-cyan-500 to-blue-500'
         },
         {
             id: 'marketing-strategy',
             title: 'Marketing Strategy',
             description: 'Targeted customer acquisition plans and brand positioning for your specific industry.',
-            icon: Globe
+            icon: Globe,
+            gradient: 'from-pink-500 to-orange-500'
         },
         {
             id: 'operations-planning',
             title: 'Operations Planning',
             description: 'Detailed workflows and resource requirements to streamline your backend operations.',
-            icon: Settings
+            icon: Settings,
+            gradient: 'from-blue-500 to-indigo-500'
         }
     ];
 
@@ -57,122 +62,194 @@ const Landing: React.FC = () => {
     ];
 
     return (
-        <div className="pt-20">
-            {/* Hero Section */}
-            <section className="relative h-[90vh] flex items-center justify-center overflow-hidden border-b border-gray-400 geometric-grid">
-                <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none" />
+        <div className="relative min-h-screen overflow-hidden">
+            {/* Liquid Background */}
+            <LiquidBackground />
 
-                <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                    >
-                        <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-none">
-                            GENERATE YOUR NEXT<br />
-                            <span className="text-blue">BUSINESS EMPIRE</span>
-                        </h1>
-                        <p className="text-gray-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-medium tracking-wide">
-                            The professional framework for architects of industry. Precision-engineered business concepts powered by strategic intelligence.
-                        </p>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Button size="lg" onClick={() => navigate('/generator')} className="w-full sm:w-auto">
-                                Start Generating <ArrowRight className="ml-2" size={18} />
-                            </Button>
-                            <Button size="lg" variant="outline" onClick={() => navigate('/feature/ai-powered-ideas')} className="w-full sm:w-auto">
-                                View Sample Plans
-                            </Button>
-                        </div>
-                    </motion.div>
-                </div>
+            {/* Content Container */}
+            <div className="relative z-10 pt-20">
 
-                {/* Background Decorative Elements */}
-                <div className="absolute top-1/4 left-10 w-20 h-20 border border-gray-400 opacity-20" />
-                <div className="absolute bottom-1/4 right-10 w-32 h-32 border border-blue opacity-10" />
-            </section>
-
-            {/* Stats Section */}
-            <section className="bg-gray-500 border-b border-gray-400 py-12">
-                <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                        {stats.map((stat) => (
-                            <div key={stat.label} className="text-center">
-                                <p className="text-4xl font-black text-white mb-1">{stat.value}</p>
-                                <p className="text-xs font-bold uppercase tracking-widest text-gray-200">{stat.label}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Features Section */}
-            <section className="py-24 bg-black">
-                <div className="max-w-7xl mx-auto px-4">
-                    <div className="mb-16">
-                        <h2 className="text-4xl font-black mb-4 tracking-tighter uppercase">Strategic Features</h2>
-                        <div className="w-20 h-1 bg-blue" />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
-                        {features.map((feature, index) => (
+                {/* Hero Section */}
+                <section className="relative min-h-[90vh] flex items-center justify-center px-4">
+                    <div className="max-w-5xl mx-auto text-center">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            {/* Badge */}
                             <motion.div
-                                key={feature.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.1 }}
-                                viewport={{ once: true }}
-                                onClick={() => navigate(`/feature/${feature.id}`)}
-                                className="cursor-pointer"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.2 }}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 liquid-glass-subtle"
                             >
-                                <Card className="h-full border-gray-400 hover:border-blue group transition-all duration-300 hover:shadow-lg hover:shadow-blue/10">
-                                    <div className="w-12 h-12 bg-gray-400 group-hover:bg-blue transition-colors flex items-center justify-center mb-6">
-                                        <feature.icon className="text-white" size={24} />
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-4 uppercase tracking-tight">{feature.title}</h3>
-                                    <p className="text-gray-200 text-sm leading-relaxed">
-                                        {feature.description}
-                                    </p>
-                                    <div className="mt-4 flex items-center text-blue text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <span>Explore Feature</span>
-                                        <ArrowRight size={14} className="ml-2" />
-                                    </div>
-                                </Card>
+                                <Sparkles size={14} className="text-purple-400" />
+                                <span className="text-xs font-semibold text-theme-secondary">AI-Powered Business Intelligence</span>
                             </motion.div>
-                        ))}
+
+                            {/* Main Title */}
+                            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 tracking-tight leading-[0.9]">
+                                <span className="text-theme-primary">Build Your Next</span>
+                                <br />
+                                <span className="gradient-text">Business Empire</span>
+                            </h1>
+
+                            {/* Subtitle */}
+                            <p className="text-theme-secondary text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+                                Transform ideas into actionable business plans. Powered by advanced AI
+                                that understands markets, competition, and growth strategies.
+                            </p>
+
+                            {/* CTA Buttons */}
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <motion.button
+                                    onClick={() => navigate('/generator')}
+                                    className="liquid-btn flex items-center gap-2 text-base px-8 py-5"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    Start Generating
+                                    <ArrowRight size={18} />
+                                </motion.button>
+                                <motion.button
+                                    onClick={() => navigate('/feature/ai-powered-ideas')}
+                                    className="liquid-btn-secondary flex items-center gap-2 text-base px-8 py-5"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    View Sample Plans
+                                </motion.button>
+                            </div>
+                        </motion.div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* CTA Section */}
-            <section className="py-24 border-t border-gray-400">
-                <div className="max-w-4xl mx-auto px-4 text-center">
-                    <h2 className="text-4xl md:text-5xl font-black mb-8 tracking-tighter uppercase">Ready to dominate the market?</h2>
-                    <p className="text-gray-200 mb-10 text-lg">
-                        Join thousands of entrepreneurs using NexusBiz to structure their future.
-                    </p>
-                    <Button size="lg" onClick={() => navigate('/generator')} className="px-12">
-                        Build Your Empire Now
-                    </Button>
-                </div>
-            </section>
+                {/* Stats Section */}
+                <section className="relative py-16">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <motion.div
+                            className="liquid-glass p-8 md:p-12"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                                {stats.map((stat, index) => (
+                                    <motion.div
+                                        key={stat.label}
+                                        className="text-center"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.1 }}
+                                        viewport={{ once: true }}
+                                    >
+                                        <p className="text-4xl md:text-5xl font-black gradient-text mb-2">{stat.value}</p>
+                                        <p className="text-xs font-semibold uppercase tracking-widest text-theme-muted">{stat.label}</p>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
 
-            {/* Footer */}
-            <footer className="py-12 bg-gray-500 border-t border-gray-400">
-                <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-blue flex items-center justify-center">
-                            <Briefcase size={14} className="text-white" />
+                {/* Features Section */}
+                <section className="relative py-24 px-4">
+                    <div className="max-w-6xl mx-auto">
+                        <motion.div
+                            className="text-center mb-16"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            <h2 className="text-4xl md:text-5xl font-black mb-4 text-theme-primary">
+                                Strategic <span className="gradient-text">Features</span>
+                            </h2>
+                            <p className="text-theme-secondary max-w-xl mx-auto">
+                                Everything you need to go from idea to execution
+                            </p>
+                        </motion.div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {features.map((feature, index) => (
+                                <motion.div
+                                    key={feature.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    viewport={{ once: true }}
+                                    onClick={() => navigate(`/feature/${feature.id}`)}
+                                    className="cursor-pointer group"
+                                >
+                                    <div className="liquid-glass p-8 h-full">
+                                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                                            <feature.icon className="text-white" size={24} />
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-3 text-theme-primary group-hover:text-indigo-400 transition-colors">
+                                            {feature.title}
+                                        </h3>
+                                        <p className="text-theme-secondary text-sm leading-relaxed mb-4">
+                                            {feature.description}
+                                        </p>
+                                        <div className="flex items-center text-indigo-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <span>Learn More</span>
+                                            <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
                         </div>
-                        <span className="text-lg font-bold tracking-tighter uppercase">NexusBiz</span>
                     </div>
-                    <div className="flex space-x-8">
-                        <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-white">Terms</a>
-                        <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-white">Privacy</a>
-                        <a href="#" className="text-xs font-bold uppercase tracking-widest text-gray-200 hover:text-white">Contact</a>
+                </section>
+
+                {/* CTA Section */}
+                <section className="relative py-24 px-4">
+                    <div className="max-w-4xl mx-auto">
+                        <motion.div
+                            className="liquid-glass p-12 md:p-16 text-center"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                        >
+                            <h2 className="text-3xl md:text-5xl font-black mb-6 text-theme-primary">
+                                Ready to <span className="gradient-text">Dominate</span> the Market?
+                            </h2>
+                            <p className="text-theme-secondary mb-10 text-lg max-w-xl mx-auto">
+                                Join thousands of entrepreneurs using NexusBiz to structure and launch their future.
+                            </p>
+                            <motion.button
+                                onClick={() => navigate('/generator')}
+                                className="liquid-btn text-base px-12 py-5"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                            >
+                                Build Your Empire Now
+                            </motion.button>
+                        </motion.div>
                     </div>
-                    <p className="text-xs text-gray-300">© 2026 NEXUSBIZ CORP. ALL RIGHTS RESERVED.</p>
-                </div>
-            </footer>
+                </section>
+
+                {/* Footer */}
+                <footer className="relative py-12 px-4 border-t border-theme">
+                    <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                        <div className="flex items-center gap-3">
+                            <div
+                                className="w-10 h-10 rounded-xl flex items-center justify-center"
+                                style={{ background: 'var(--gradient-primary)' }}
+                            >
+                                <Briefcase size={20} className="text-white" />
+                            </div>
+                            <span className="text-xl font-black text-theme-primary">NexusBiz</span>
+                        </div>
+                        <div className="flex gap-8">
+                            <a href="#" className="text-sm font-medium text-theme-muted hover:text-theme-primary transition-colors">Terms</a>
+                            <a href="#" className="text-sm font-medium text-theme-muted hover:text-theme-primary transition-colors">Privacy</a>
+                            <a href="#" className="text-sm font-medium text-theme-muted hover:text-theme-primary transition-colors">Contact</a>
+                        </div>
+                        <p className="text-sm text-theme-muted">© 2026 NexusBiz. All rights reserved.</p>
+                    </div>
+                </footer>
+            </div>
         </div>
     );
 };

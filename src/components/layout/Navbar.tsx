@@ -41,14 +41,17 @@ const Navbar: React.FC = () => {
     }, []);
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-gray-400">
+        <nav className="fixed top-0 left-0 w-full z-50 liquid-glass-subtle border-b border-theme">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
-                    <Link to="/" className="flex items-center space-x-2">
-                        <div className="w-8 h-8 bg-blue flex items-center justify-center">
+                    <Link to="/" className="flex items-center space-x-3">
+                        <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center liquid-logo-glow"
+                            style={{ background: 'var(--gradient-primary)' }}
+                        >
                             <Briefcase size={20} className="text-white" />
                         </div>
-                        <span className="text-xl font-bold tracking-tighter uppercase">Nexus<span className="text-blue">Biz</span></span>
+                        <span className="text-xl font-bold tracking-tight text-theme-primary">Nexus<span className="gradient-text">Biz</span></span>
                     </Link>
 
                     {/* Desktop Menu */}

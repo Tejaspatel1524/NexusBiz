@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
-import { ArrowLeft, ArrowRight, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Zap, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Button from '../components/common/Button';
 import StepOne from '../components/wizard/StepOne';
 import StepTwo from '../components/wizard/StepTwo';
 import StepThree from '../components/wizard/StepThree';
@@ -11,6 +10,7 @@ import StepFour from '../components/wizard/StepFour';
 import { useBusinessStore } from '../store/useBusinessStore';
 import type { BusinessIdeaInputs } from '../types';
 import { PlanSkeleton } from '../components/common/Skeleton';
+import LiquidBackground from '../components/common/LiquidBackground';
 
 const Generator: React.FC = () => {
     const [step, setStep] = useState(1);
@@ -67,12 +67,10 @@ const Generator: React.FC = () => {
         console.log('Starting idea generation with inputs:', data);
 
         try {
-            // Import API service
             const { generateIdeas } = await import('../utils/api');
 
             console.log('Calling Ollama API...');
 
-            // Call Ollama API with progress tracking
             const ideas = await generateIdeas(
                 {
                     industry: data.industry || 'Technology',
@@ -92,17 +90,14 @@ const Generator: React.FC = () => {
 
             console.log('Raw API response:', ideas);
 
-            // Handle different response formats
             let ideasArray: any[] = [];
             if (Array.isArray(ideas)) {
                 ideasArray = ideas;
             } else if (ideas && typeof ideas === 'object') {
-                // Check if it's wrapped in an 'ideas' property
                 const ideasObj = ideas as any;
                 if (Array.isArray(ideasObj.ideas)) {
                     ideasArray = ideasObj.ideas;
                 } else {
-                    // Single idea object, wrap in array
                     ideasArray = [ideas];
                 }
             }
@@ -113,7 +108,6 @@ const Generator: React.FC = () => {
                 throw new Error('No ideas were generated');
             }
 
-            // Transform API response to match expected format
             const formattedIdeas = ideasArray.map((idea: any, index: number) => ({
                 id: idea.id || String(index + 1),
                 title: idea.title || `Business Idea ${index + 1}`,
@@ -142,13 +136,11 @@ const Generator: React.FC = () => {
             console.error('Error generating ideas:', error);
             setIsLoading(false);
 
-            // Show more helpful error message
             const errorMessage = error.message || 'Unknown error occurred';
             alert(`Failed to generate ideas: ${errorMessage}\n\nPlease ensure:\n1. Backend server is running on port 5000\n2. Ollama is running\n3. Check console for details`);
         }
     };
 
-    // Helper functions for budget parsing
     const getBudgetMin = (budget?: string): number => {
         if (!budget) return 10000;
         const match = budget.match(/\$?([\d,]+)k?/i);
@@ -172,88 +164,138 @@ const Generator: React.FC = () => {
         return 50000;
     };
 
+    const stepLabels = ['Market', 'Skills', 'Strategy', 'Launch'];
+
     return (
-        <div className="min-h-screen pt-32 pb-20 bg-theme-primary transition-colors duration-500">
-            <div className="max-w-4xl mx-auto px-4">
-                {isLoading ? (
-                    <div className="space-y-12">
-                        <div className="text-center space-y-4 mb-20 page-fade-in">
-                            <h2 className="text-3xl font-black uppercase tracking-tighter">Strategic Synthesis in Progress</h2>
-                            <p className="text-theme-secondary max-w-md mx-auto italic">AI is currently architecting your business concepts based on provided parameters...</p>
-                        </div>
-                        <PlanSkeleton />
-                    </div>
-                ) : (
-                    <>
-                        {/* Progress Tracker */}
-                        <div className="mb-12">
-                            <div className="flex justify-between mb-4">
-                                {[1, 2, 3, 4].map((s) => (
-                                    <div
-                                        key={s}
-                                        className={`flex-1 h-1 transition-all duration-500 ${s <= step ? 'bg-blue' : 'bg-gray-400'
-                                            } ${s !== 1 ? 'ml-2' : ''}`}
-                                    />
-                                ))}
+        <div className="min-h-screen relative overflow-hidden">
+            {/* Liquid Background */}
+            <LiquidBackground />
+
+            {/* Content */}
+            <div className="relative z-10 pt-28 pb-20 px-4">
+                <div className="max-w-3xl mx-auto">
+                    {isLoading ? (
+                        <motion.div
+                            className="space-y-12"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                        >
+                            <div className="text-center space-y-4 mb-16">
+                                <motion.div
+                                    className="w-20 h-20 mx-auto rounded-2xl flex items-center justify-center mb-6"
+                                    style={{ background: 'var(--gradient-primary)' }}
+                                    animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                >
+                                    <Sparkles size={32} className="text-white" />
+                                </motion.div>
+                                <h2 className="text-3xl font-black gradient-text">Generating Your Ideas</h2>
+                                <p className="text-theme-secondary max-w-md mx-auto">
+                                    AI is architecting your business concepts based on your parameters...
+                                </p>
                             </div>
-                            <div className="flex justify-between">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-200">Landscape</span>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-200">Assets</span>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-200">Strategy</span>
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-200">Launch</span>
+                            <PlanSkeleton />
+                        </motion.div>
+                    ) : (
+                        <>
+                            {/* Header */}
+                            <motion.div
+                                className="text-center mb-12"
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                <h1 className="text-4xl font-black mb-3">
+                                    <span className="text-theme-primary">Business </span>
+                                    <span className="gradient-text">Generator</span>
+                                </h1>
+                                <p className="text-theme-secondary">Configure your ideal business parameters</p>
+                            </motion.div>
+
+                            {/* Progress Tracker */}
+                            <div className="mb-10">
+                                <div className="flex gap-2 mb-4">
+                                    {[1, 2, 3, 4].map((s) => (
+                                        <div
+                                            key={s}
+                                            className="flex-1 h-2 rounded-full transition-all duration-500"
+                                            style={{
+                                                background: s <= step ? 'var(--gradient-primary)' : 'var(--glass-bg)',
+                                                border: s > step ? '1px solid var(--glass-border)' : 'none'
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                                <div className="flex justify-between px-2">
+                                    {stepLabels.map((label, i) => (
+                                        <span
+                                            key={label}
+                                            className={`text-xs font-semibold transition-colors ${i + 1 <= step ? 'text-indigo-400' : 'text-theme-muted'
+                                                }`}
+                                        >
+                                            {label}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Wizard Form */}
-                        <div className="bg-black border border-gray-400 p-8 md:p-12 shadow-2xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue opacity-5 -mr-16 -mt-16 rotate-45" />
+                            {/* Wizard Form */}
+                            <motion.div
+                                className="liquid-glass p-8 md:p-12"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                <FormProvider {...methods}>
+                                    <form onSubmit={(e) => e.preventDefault()}>
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={step}
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -20 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                {step === 1 && <StepOne />}
+                                                {step === 2 && <StepTwo />}
+                                                {step === 3 && <StepThree />}
+                                                {step === 4 && <StepFour />}
+                                            </motion.div>
+                                        </AnimatePresence>
 
-                            <FormProvider {...methods}>
-                                <form onSubmit={(e) => e.preventDefault()}>
-                                    <AnimatePresence mode="wait">
-                                        <motion.div
-                                            key={step}
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            transition={{ duration: 0.3 }}
-                                        >
-                                            {step === 1 && <StepOne />}
-                                            {step === 2 && <StepTwo />}
-                                            {step === 3 && <StepThree />}
-                                            {step === 4 && <StepFour />}
-                                        </motion.div>
-                                    </AnimatePresence>
+                                        <div className="mt-12 pt-8 border-t border-theme flex justify-between items-center">
+                                            <motion.button
+                                                type="button"
+                                                onClick={handleBack}
+                                                className="flex items-center gap-2 text-theme-secondary hover:text-theme-primary transition-colors font-medium"
+                                                whileHover={{ x: -4 }}
+                                            >
+                                                <ArrowLeft size={18} />
+                                                {step === 1 ? 'Cancel' : 'Back'}
+                                            </motion.button>
 
-                                    <div className="mt-16 pt-8 border-t border-gray-400 flex justify-between items-center">
-                                        <Button
-                                            variant="ghost"
-                                            onClick={handleBack}
-                                            className="px-0"
-                                        >
-                                            <ArrowLeft className="mr-2" size={18} /> {step === 1 ? 'Cancel' : 'Previous Phase'}
-                                        </Button>
+                                            <motion.button
+                                                type="button"
+                                                onClick={handleNext}
+                                                className="liquid-btn flex items-center gap-2 px-8 py-4"
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                            >
+                                                {step === 4 ? (
+                                                    <>Generate Ideas <Zap size={18} className="fill-current" /></>
+                                                ) : (
+                                                    <>Continue <ArrowRight size={18} /></>
+                                                )}
+                                            </motion.button>
+                                        </div>
+                                    </form>
+                                </FormProvider>
+                            </motion.div>
 
-                                        <Button
-                                            onClick={handleNext}
-                                            className="px-12"
-                                        >
-                                            {step === 4 ? (
-                                                <>Initiate Synthesis <Zap className="ml-2 fill-current" size={18} /></>
-                                            ) : (
-                                                <>Proceed to Next Phase <ArrowRight className="ml-2" size={18} /></>
-                                            )}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </FormProvider>
-                        </div>
-
-                        <p className="mt-12 text-center text-[10px] font-black uppercase tracking-[0.4em] text-theme-muted mb-4 opacity-50">
-                            Neural Engine Architecture v2.0.1
-                        </p>
-                    </>
-                )}
+                            <p className="mt-10 text-center text-xs text-theme-muted">
+                                Step {step} of 4 • NexusBiz AI Engine
+                            </p>
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );
