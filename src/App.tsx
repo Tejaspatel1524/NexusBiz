@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n';
 import Navbar from './components/layout/Navbar';
@@ -11,8 +11,22 @@ import About from './pages/About';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import FeatureDetail from './pages/FeatureDetail';
+import { useThemeStore } from './store/useThemeStore';
 
 const App: React.FC = () => {
+  const { isDarkMode } = useThemeStore();
+
+  // Initialize theme on mount
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    }
+  }, [isDarkMode]);
+
   return (
     <LanguageProvider>
       <Router>

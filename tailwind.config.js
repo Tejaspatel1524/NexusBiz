@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -33,7 +34,7 @@ export default {
         'md': '4px', // No rounded corners beyond 4px
         'lg': '4px',
         'xl': '4px',
-        'full': '4px', 
+        'full': '4px',
       },
       spacing: {
         '1': '4px',

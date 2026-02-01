@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, User, Briefcase, Settings, LogIn, LayoutDashboard } from 'lucide-react';
+import { Menu, X, User, Briefcase, Settings, LogIn, LayoutDashboard, Moon, Sun } from 'lucide-react';
 import { cn } from '../common/Button';
 import { useLanguage } from '../../i18n';
+import { useThemeStore } from '../../store/useThemeStore';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,7 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
     const userMenuRef = useRef<HTMLDivElement>(null);
     const { t } = useLanguage();
+    const { isDarkMode, toggleTheme } = useThemeStore();
 
     const navLinks = [
         { name: t('home'), path: '/' },
@@ -96,6 +98,15 @@ const Navbar: React.FC = () => {
                                 </div>
                             )}
                         </div>
+
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 border border-gray-400 text-gray-100 hover:border-blue hover:text-blue transition-all duration-300 theme-toggle"
+                            aria-label="Toggle theme"
+                        >
+                            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                        </button>
                     </div>
 
                     {/* Mobile Menu Button */}
