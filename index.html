@@ -3,11 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>tejas2410</title>
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="NexusBiz - AI-Powered Business Planning & Insights Platform" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>NexusBiz</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Register Service Worker for PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+              console.log('NexusBiz SW registered:', registration.scope);
+            })
+            .catch((error) => {
+              console.log('NexusBiz SW registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
