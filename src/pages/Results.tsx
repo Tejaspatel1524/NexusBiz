@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Filter, RotateCcw, LayoutGrid, List, PieChart, Activity, TrendingUp } from 'lucide-react';
+import { Filter, RotateCcw, LayoutGrid, List, PieChart, Activity, TrendingUp, GitCompare } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useBusinessStore } from '../store/useBusinessStore';
+import { useComparisonStore } from '../store/useComparisonStore';
 import IdeaCard from '../components/dashboard/IdeaCard';
+import ComparisonModal from '../components/dashboard/ComparisonModal';
 import Button from '../components/common/Button';
 import { PlanSkeleton } from '../components/common/Skeleton';
 import AnimatedCounter from '../components/common/AnimatedCounter';
 const Results: React.FC = () => {
     const navigate = useNavigate();
     const { generatedIdeas, isLoading, setSelectedPlan } = useBusinessStore();
+    const { isCompareMode, toggleCompareMode, selectedIdeas, openModal, clearSelection } = useComparisonStore();
     const [sortBy, setSortBy] = useState('relevance');
     const [searchQuery, setSearchQuery] = useState('');
     const [showOnboarding, setShowOnboarding] = useState(() => {
@@ -121,6 +125,20 @@ const Results: React.FC = () => {
                             <button className="px-3 py-1.5 bg-blue text-white rounded-md"><LayoutGrid size={16} /></button>
                             <button className="px-3 py-1.5 text-theme-secondary hover:text-theme-primary transition-colors"><List size={16} /></button>
                         </div>
+
+                        {/* Compare Mode Toggle */}
+                        <motion.button
+                            onClick={toggleCompareMode}
+                            className={`flex items-center gap-2 px-4 py-3 rounded-lg font-bold text-xs uppercase tracking-widest transition-all ${isCompareMode
+                                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
+                                : 'glass text-theme-secondary hover:text-theme-primary'
+                                }`}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            <GitCompare size={16} />
+                            {isCompareMode ? 'Exit Compare' : 'Compare'}
+                        </motion.button>
 
                         <div className="relative">
                             <select
@@ -255,6 +273,50 @@ const Results: React.FC = () => {
                     </div>
                 </div>
             )}
+            {/* Comparison Floating Action Bar */}
+            <AnimatePresence>
+                {isCompareMode && selectedIdeas.length > 0 && (
+                    <motion.div
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 100, opacity: 0 }}
+                        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 bg-gray-900/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl border border-indigo-500/50 shadow-2xl shadow-indigo-500/20"
+                    >
+                        <div className="flex items-center gap-3 pr-4 border-r border-white/10">
+                            <div className="flex -space-x-2">
+                                {selectedIdeas.map((idea) => (
+                                    <div key={idea.id} className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 border-2 border-gray-900 flex items-center justify-center text-[10px] font-bold">
+                                        {idea.title.charAt(0)}
+                                    </div>
+                                ))}
+                            </div>
+                            <span className="text-sm font-medium">
+                                <span className="text-indigo-400 font-bold">{selectedIdeas.length}</span>/3 Selected
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={clearSelection}
+                                className="px-4 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-colors"
+                            >
+                                Clear
+                            </button>
+                            <button
+                                onClick={openModal}
+                                disabled={selectedIdeas.length < 2}
+                                className={`px-6 py-2 rounded-lg font-bold text-sm bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25 transition-all ${selectedIdeas.length < 2 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                                    }`}
+                            >
+                                Compare Now
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Comparison Modal */}
+            <ComparisonModal />
         </div>
     );
 };

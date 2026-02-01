@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
-import { Briefcase, DollarSign, Clock, ArrowRight, Bookmark, TrendingUp } from 'lucide-react';
+import { Briefcase, DollarSign, Clock, ArrowRight, Bookmark, TrendingUp, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { BusinessIdea } from '../../types';
 import { cn } from '../common/Button';
 import { useSavedIdeasStore } from '../../store/useSavedIdeasStore';
+import { useComparisonStore } from '../../store/useComparisonStore';
 import SuccessScoreBadge, { calculateSuccessScore } from '../common/SuccessScoreBadge';
 import SparklineChart, { generateRevenueData } from '../common/SparklineChart';
 
@@ -15,7 +16,10 @@ interface IdeaCardProps {
 
 const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
     const { saveIdea, unsaveIdea, isIdeaSaved } = useSavedIdeasStore();
+    const { isCompareMode, toggleIdeaSelection, isIdeaSelected, selectedIdeas } = useComparisonStore();
     const isSaved = isIdeaSaved(idea.id);
+    const isSelected = isIdeaSelected(idea.id);
+    const canSelect = selectedIdeas.length < 3 || isSelected;
 
     const handleBookmark = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -41,14 +45,35 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
     );
 
     return (
-        <div className={cn(
-            "liquid-glass p-8 flex flex-col h-full group relative overflow-hidden",
-            className
-        )}>
+        <div
+            className={cn(
+                "liquid-glass p-8 flex flex-col h-full group relative overflow-hidden transition-all duration-300",
+                isCompareMode && isSelected && "ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent",
+                isCompareMode && !canSelect && "opacity-50",
+                className
+            )}
+            onClick={() => isCompareMode && canSelect && toggleIdeaSelection(idea)}
+        >
             {/* Background Accent */}
             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                 <Briefcase size={120} />
             </div>
+
+            {/* Compare Mode Selection Checkbox */}
+            {isCompareMode && (
+                <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className={cn(
+                        "absolute top-4 left-4 w-8 h-8 rounded-lg flex items-center justify-center z-20 cursor-pointer transition-all",
+                        isSelected
+                            ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30"
+                            : "bg-theme-tertiary/80 text-theme-muted border border-theme hover:border-indigo-500"
+                    )}
+                >
+                    {isSelected && <Check size={16} strokeWidth={3} />}
+                </motion.div>
+            )}
 
             {/* Bookmark Button */}
             <motion.button
