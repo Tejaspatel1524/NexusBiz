@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusBiz Design Showcase</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        blue: {
+                            DEFAULT: "#0066FF",
+                            dark: "#0052CC",
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top left, #0f172a, #000000);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 200px);
+            gap: 1.5rem;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="p-8 md:p-16 text-white overflow-x-hidden">
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto mb-16 fade-in">
+        <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 bg-blue flex items-center justify-center rounded">
+                <i data-lucide="briefcase" class="text-white"></i>
+            </div>
+            <h1 class="text-3xl font-black uppercase tracking-tighter">Nexus<span class="text-blue">Biz</span> Premium
+            </h1>
+        </div>
+        <p class="text-slate-400 max-w-2xl">Visualizing the future of your professional business architecture platform.
+        </p>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+
+        <!-- Toggle Demo Buttons -->
+        <div class="flex gap-4 mb-12 fade-in" style="animation-delay: 0.1s">
+            <button onclick="showDesign('bento')"
+                class="px-6 py-2 bg-blue rounded-full font-bold text-sm hover:bg-blue-dark transition-all">Bento &
+                Glassmorphism</button>
+            <button onclick="showDesign('skeleton')"
+                class="px-6 py-2 bg-slate-800 rounded-full font-bold text-sm hover:bg-slate-700 transition-all">Skeleton
+                Loaders</button>
+        </div>
+
+        <!-- Bento Demo Container -->
+        <div id="bento-demo" class="bento-grid fade-in" style="animation-delay: 0.2s">
+            <div
+                class="glass col-span-2 row-span-2 p-8 rounded-2xl border-white/10 hover:border-blue/50 transition-all duration-500 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-slate-400 uppercase text-[10px] font-black tracking-widest mb-2">Revenue Growth</h3>
+                    <div class="text-5xl font-black mb-4">+24.8%</div>
+                </div>
+                <!-- Mini Chart Visual -->
+                <div class="h-32 w-full flex items-end gap-1">
+                    <div class="w-full bg-blue/20 rounded-t h-[40%]"></div>
+                    <div class="w-full bg-blue/40 rounded-t h-[60%]"></div>
+                    <div class="w-full bg-blue/60 rounded-t h-[50%]"></div>
+                    <div class="w-full bg-blue/80 rounded-t h-[80%]"></div>
+                    <div class="w-full bg-blue rounded-t h-[100%]"></div>
+                </div>
+            </div>
+
+            <div class="glass col-span-2 items-center flex justify-between p-8 rounded-2xl border-white/10">
+                <div>
+                    <h3 class="text-slate-400 uppercase text-[10px] font-black tracking-widest mb-1">Market Sentiment
+                    </h3>
+                    <div class="text-2xl font-bold">Bullish Trend</div>
+                </div>
+                <div class="w-12 h-12 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center">
+                    <i data-lucide="trending-up"></i>
+                </div>
+            </div>
+
+            <div class="glass p-8 rounded-2xl border-white/10 flex flex-col justify-center">
+                <i data-lucide="target" class="text-blue mb-4"></i>
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">Market Size</div>
+                <div class="text-xl font-black">$4.2B</div>
+            </div>
+
+            <div class="glass p-8 rounded-2xl border-white/10 flex flex-col justify-center">
+                <i data-lucide="shield" class="text-red-500 mb-4"></i>
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-widest">Risk Factor</div>
+                <div class="text-xl font-black">Low</div>
+            </div>
+        </div>
+
+        <!-- Skeleton Demo Container (Hidden by default) -->
+        <div id="skeleton-demo" class="hidden space-y-8 max-w-3xl">
+            <div class="glass p-8 rounded-2xl space-y-6">
+                <div class="h-8 skeleton w-1/3 rounded"></div>
+                <div class="space-y-3">
+                    <div class="h-4 skeleton w-full rounded"></div>
+                    <div class="h-4 skeleton w-full rounded"></div>
+                    <div class="h-4 skeleton w-2/3 rounded"></div>
+                </div>
+                <div class="grid grid-cols-3 gap-4 pt-4">
+                    <div class="h-24 skeleton rounded-xl"></div>
+                    <div class="h-24 skeleton rounded-xl"></div>
+                    <div class="h-24 skeleton rounded-xl"></div>
+                </div>
+            </div>
+            <div class="text-center text-slate-500 italic text-sm">AI is thinking...</div>
+        </div>
+
+    </main>
+
+    <script>
+        // Init Lucide icons
+        lucide.createIcons();
+
+        function showDesign(type) {
+            const bento = document.getElementById('bento-demo');
+            const skeleton = document.getElementById('skeleton-demo');
+            const buttons = document.querySelectorAll('button');
+
+            if (type === 'bento') {
+                bento.classList.remove('hidden');
+                skeleton.classList.add('hidden');
+                buttons[0].classList.replace('bg-slate-800', 'bg-blue');
+                buttons[1].classList.replace('bg-blue', 'bg-slate-800');
+            } else {
+                bento.classList.add('hidden');
+                skeleton.classList.remove('hidden');
+                buttons[0].classList.replace('bg-blue', 'bg-slate-800');
+                buttons[1].classList.replace('bg-slate-800', 'bg-blue');
+            }
+        }
+    </script>
+</body>
+
+</html>
