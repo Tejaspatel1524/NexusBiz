@@ -11,6 +11,7 @@ import About from './pages/About';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import FeatureDetail from './pages/FeatureDetail';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import { useThemeStore } from './store/useThemeStore';
 
 const App: React.FC = () => {
@@ -34,15 +35,18 @@ const App: React.FC = () => {
           <Navbar />
           <main>
             <Routes>
+              {/* Public Routes */}
               <Route path="/" element={<Landing />} />
-              <Route path="/generator" element={<Generator />} />
-              <Route path="/results" element={<Results />} />
-              <Route path="/plan/:id" element={<BusinessPlan />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/about" element={<About />} />
-              <Route path="/settings" element={<Settings />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/feature/:featureId" element={<FeatureDetail />} />
+
+              {/* Protected Routes - Require Authentication */}
+              <Route path="/generator" element={<ProtectedRoute><Generator /></ProtectedRoute>} />
+              <Route path="/results" element={<ProtectedRoute><Results /></ProtectedRoute>} />
+              <Route path="/plan/:id" element={<ProtectedRoute><BusinessPlan /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              <Route path="/feature/:featureId" element={<ProtectedRoute><FeatureDetail /></ProtectedRoute>} />
             </Routes>
           </main>
         </div>
@@ -52,5 +56,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-
