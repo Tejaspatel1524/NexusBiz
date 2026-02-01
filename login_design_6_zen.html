@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusBiz Login - Design 6: Minimal Zen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            color: #0a0a0a;
+        }
+
+        /* Subtle Gradient Accent */
+        .accent-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #22c55e, #3b82f6);
+            background-size: 200% 100%;
+            animation: gradient-slide 4s linear infinite;
+        }
+
+        @keyframes gradient-slide {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        /* Floating Circles */
+        .circle {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.03;
+            animation: float-circle 20s ease-in-out infinite;
+        }
+
+        .circle-1 {
+            width: 800px;
+            height: 800px;
+            background: #3b82f6;
+            top: -400px;
+            right: -200px;
+        }
+
+        .circle-2 {
+            width: 600px;
+            height: 600px;
+            background: #8b5cf6;
+            bottom: -300px;
+            left: -200px;
+            animation-delay: 5s;
+        }
+
+        @keyframes float-circle {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(-20px, 20px);
+            }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        /* Logo */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            margin: 0 auto 20px;
+            border-radius: 14px;
+        }
+
+        .logo-section h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0a0a0a;
+        }
+
+        .logo-section p {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #f5f5f5;
+            border: 2px solid transparent;
+            padding: 16px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            background: white;
+            border-color: #0a0a0a;
+        }
+
+        .input-group input::placeholder {
+            color: #999;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #0a0a0a;
+            color: white;
+            border: none;
+            padding: 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 12px;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #1a1a1a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+            gap: 16px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .divider span {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .social-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: white;
+            border: 2px solid #eee;
+            padding: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .social-btn:hover {
+            border-color: #0a0a0a;
+        }
+
+        .social-icon {
+            font-size: 18px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .footer p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .footer a {
+            color: #0a0a0a;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Trust Badges */
+        .trust-section {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .trust-icon {
+            font-size: 16px;
+        }
+
+        .design-label {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: #0a0a0a;
+            padding: 14px 28px;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="design-label">Design 6: Zen</div>
+
+    <div class="accent-gradient"></div>
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+
+    <div class="container">
+        <div class="logo-section">
+            <div class="logo">N</div>
+            <h1>NexusBiz</h1>
+            <p>Sign in to continue to your workspace</p>
+        </div>
+
+        <div class="card">
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" placeholder="you@company.com">
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" placeholder="••••••••">
+            </div>
+
+            <button class="submit-btn">Continue</button>
+
+            <div class="divider"><span>or</span></div>
+
+            <div class="social-btns">
+                <button class="social-btn"><span class="social-icon">G</span> Continue with Google</button>
+                <button class="social-btn"><span class="social-icon">⌘</span> Continue with GitHub</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Don't have an account? <a href="#">Sign up for free</a></p>
+        </div>
+
+        <div class="trust-section">
+            <div class="trust-badge"><span class="trust-icon">🔒</span> Secure</div>
+            <div class="trust-badge"><span class="trust-icon">⚡</span> Fast</div>
+            <div class="trust-badge"><span class="trust-icon">🛡️</span> Private</div>
+        </div>
+    </div>
+</body>
+
+</html>

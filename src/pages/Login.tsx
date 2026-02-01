@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, ArrowRight, Briefcase, Eye, EyeOff, Shield, Zap } from 'lucide-react';
-import Button from '../components/common/Button';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -18,234 +17,339 @@ const Login: React.FC = () => {
     });
     const [loading, setLoading] = useState(false);
 
-    // Get the page user was trying to access, or default to generator
     const from = (location.state as any)?.from?.pathname || '/generator';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // Authenticate the user
         login(formData.name || 'User', formData.email);
-
         setLoading(false);
         navigate(from, { replace: true });
     };
 
-
     return (
-        <div className="min-h-screen pt-32 pb-20 bg-theme-primary flex items-center justify-center relative overflow-hidden transition-colors duration-500">
-            {/* Neural Flow Background */}
-            <div className="bg-blob -top-20 -left-20 animate-pulse opacity-20"></div>
-            <div className="bg-blob bg-blob-purple bottom-20 -right-20 opacity-15"></div>
+        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0f0f0f]">
+            {/* Animated Gradient Background */}
+            <div
+                className="fixed inset-0 opacity-100"
+                style={{
+                    background: 'linear-gradient(-45deg, #0f0f0f, #1a0a2e, #0a1628, #0f0f0f)',
+                    backgroundSize: '400% 400%',
+                    animation: 'gradientShift 15s ease infinite'
+                }}
+            />
 
-            <div className="max-w-6xl w-full px-4 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Liquid Blobs */}
+            <motion.div
+                className="fixed w-[600px] h-[600px] rounded-full"
+                style={{
+                    background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%)',
+                    filter: 'blur(80px)',
+                    top: '-200px',
+                    left: '-100px',
+                    opacity: 0.4
+                }}
+                animate={{
+                    x: [0, 30, -20, 0],
+                    y: [0, -30, 20, 0],
+                    scale: [1, 1.05, 0.95, 1]
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <motion.div
+                className="fixed w-[500px] h-[500px] rounded-full"
+                style={{
+                    background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+                    filter: 'blur(80px)',
+                    bottom: '-150px',
+                    right: '-100px',
+                    opacity: 0.3
+                }}
+                animate={{
+                    x: [0, -20, 30, 0],
+                    y: [0, 20, -30, 0],
+                    scale: [1, 0.95, 1.05, 1]
+                }}
+                transition={{ duration: 8, delay: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <motion.div
+                className="fixed w-[400px] h-[400px] rounded-full"
+                style={{
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
+                    filter: 'blur(80px)',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    opacity: 0.15
+                }}
+                animate={{
+                    scale: [1, 1.1, 0.9, 1]
+                }}
+                transition={{ duration: 8, delay: 4, repeat: Infinity, ease: 'easeInOut' }}
+            />
 
-                    {/* Left Accents (Visible on Desktop) */}
-                    <div className="hidden lg:flex lg:col-span-3 flex-col gap-8">
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="glass p-8 flex-1 flex flex-col justify-center glass-hover"
+            {/* Main Container */}
+            <div className="relative z-10 flex flex-col items-center px-6 py-12">
+                {/* Logo Area */}
+                <motion.div
+                    className="text-center mb-12"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                >
+                    <motion.div
+                        className="w-20 h-20 mx-auto mb-6 flex items-center justify-center text-4xl font-black text-white rounded-3xl"
+                        style={{
+                            background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%)',
+                            boxShadow: '0 20px 60px rgba(99, 102, 241, 0.4)'
+                        }}
+                        animate={{
+                            boxShadow: [
+                                '0 20px 60px rgba(99, 102, 241, 0.4)',
+                                '0 20px 80px rgba(168, 85, 247, 0.6)',
+                                '0 20px 60px rgba(99, 102, 241, 0.4)'
+                            ]
+                        }}
+                        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                    >
+                        N
+                    </motion.div>
+                    <h1
+                        className="text-5xl font-black"
+                        style={{
+                            background: 'linear-gradient(135deg, #fff 0%, #a5b4fc 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            backgroundClip: 'text'
+                        }}
+                    >
+                        NexusBiz
+                    </h1>
+                    <p className="mt-2 text-sm text-white/50 tracking-[0.3em] uppercase">
+                        AI Business Engine
+                    </p>
+                </motion.div>
+
+                {/* Login Card */}
+                <motion.div
+                    className="w-full max-w-[440px] p-12 rounded-[32px]"
+                    style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        backdropFilter: 'blur(40px)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        boxShadow: '0 40px 100px rgba(0, 0, 0, 0.5)'
+                    }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                    {/* Tabs */}
+                    <div
+                        className="flex gap-2 p-1.5 rounded-2xl mb-10"
+                        style={{ background: 'rgba(255, 255, 255, 0.05)' }}
+                    >
+                        <button
+                            onClick={() => setIsLogin(true)}
+                            className={`flex-1 py-4 text-sm font-semibold rounded-xl transition-all duration-300 ${isLogin
+                                    ? 'text-white shadow-lg'
+                                    : 'text-white/50 hover:text-white/70'
+                                }`}
+                            style={isLogin ? {
+                                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                                boxShadow: '0 10px 30px rgba(99, 102, 241, 0.3)'
+                            } : {}}
                         >
-                            <div className="w-10 h-10 bg-blue/10 rounded-full flex items-center justify-center text-blue mb-4">
-                                <Shield size={20} />
-                            </div>
-                            <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-2">Zero-Cloud Trust</h3>
-                            <p className="text-[10px] text-theme-muted leading-relaxed uppercase font-bold">
-                                Your data remains encrypted and stored locally. We never sync your ideas to external servers.
-                            </p>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="glass p-8 flex-1 flex flex-col justify-center glass-hover"
+                            Sign In
+                        </button>
+                        <button
+                            onClick={() => setIsLogin(false)}
+                            className={`flex-1 py-4 text-sm font-semibold rounded-xl transition-all duration-300 ${!isLogin
+                                    ? 'text-white shadow-lg'
+                                    : 'text-white/50 hover:text-white/70'
+                                }`}
+                            style={!isLogin ? {
+                                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                                boxShadow: '0 10px 30px rgba(99, 102, 241, 0.3)'
+                            } : {}}
                         >
-                            <div className="w-10 h-10 bg-blue/10 rounded-full flex items-center justify-center text-blue mb-4">
-                                <Zap size={20} />
-                            </div>
-                            <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-2">Neural Engine</h3>
-                            <p className="text-[10px] text-theme-muted leading-relaxed uppercase font-bold">
-                                Powered by local LLM architecture for millisecond response times and ultimate privacy.
-                            </p>
-                        </motion.div>
+                            Create Account
+                        </button>
                     </div>
 
-                    {/* Main Portal Card */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="lg:col-span-6 glass p-10 md:p-16 relative overflow-hidden shadow-2xl border-blue/10"
-                    >
-                        {/* Decorative Background Element */}
-                        <div className="absolute top-0 right-0 w-48 h-48 bg-blue opacity-5 -mr-24 -mt-24 rotate-45 pointer-events-none" />
-
-                        {/* Logo & Header */}
-                        <div className="text-center mb-12 relative z-10">
-                            <div className="flex items-center justify-center gap-3 mb-6">
-                                <div className="w-12 h-12 bg-blue flex items-center justify-center shadow-lg shadow-blue/20">
-                                    <Briefcase size={28} className="text-white" />
-                                </div>
-                                <span className="text-3xl font-black tracking-tighter uppercase whitespace-nowrap">
-                                    Nexus<span className="text-blue">Biz</span>
-                                </span>
-                            </div>
-                            <h2 className="text-sm font-black uppercase tracking-[0.4em] text-theme-muted">
-                                {isLogin ? 'Initialize Session' : 'Create Architecture'}
-                            </h2>
-                        </div>
-
-                        {/* Form Switchers */}
-                        <div className="flex mb-10 glass p-1 rounded-lg relative z-10">
-                            <button
-                                onClick={() => setIsLogin(true)}
-                                className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all duration-300 rounded-md ${isLogin ? 'bg-blue text-white shadow-lg' : 'text-theme-muted hover:text-theme-primary'}`}
-                            >
-                                Login
-                            </button>
-                            <button
-                                onClick={() => setIsLogin(false)}
-                                className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all duration-300 rounded-md ${!isLogin ? 'bg-blue text-white shadow-lg' : 'text-theme-muted hover:text-theme-primary'}`}
-                            >
-                                Sign Up
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-                            <AnimatePresence mode="wait">
-                                {!isLogin && (
-                                    <motion.div
-                                        key="signup-name"
-                                        initial={{ opacity: 0, y: -10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                    >
-                                        <label className="block text-[10px] font-black uppercase tracking-widest text-theme-muted mb-3">Full Identity</label>
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <AnimatePresence mode="wait">
+                            {!isLogin && (
+                                <motion.div
+                                    key="name-field"
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <label className="block text-xs text-white/60 font-semibold mb-3">
+                                        Full Name
+                                    </label>
+                                    <div className="relative">
+                                        <User size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/30" />
                                         <input
                                             type="text"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full glass border-blue/10 px-6 py-4 text-sm focus:border-blue/40 focus:outline-none transition-all placeholder:text-theme-muted/50"
+                                            className="w-full pl-14 pr-6 py-5 rounded-2xl text-white text-[15px] transition-all duration-300 focus:outline-none"
+                                            style={{
+                                                background: 'rgba(255, 255, 255, 0.08)',
+                                                border: '1px solid rgba(255, 255, 255, 0.1)'
+                                            }}
                                             placeholder="John Doe"
                                             required={!isLogin}
                                         />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-
-                            <div>
-                                <label className="block text-[10px] font-black uppercase tracking-widest text-theme-muted mb-3">Neural Address</label>
-                                <div className="relative group">
-                                    <Mail size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-theme-muted group-focus-within:text-blue transition-colors" />
-                                    <input
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full glass border-blue/10 pl-14 pr-6 py-4 text-sm focus:border-blue/40 focus:outline-none transition-all placeholder:text-theme-muted/50"
-                                        placeholder="user@nexusbiz.ai"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-[10px] font-black uppercase tracking-widest text-theme-muted mb-3">Secret Key</label>
-                                <div className="relative group">
-                                    <Lock size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-theme-muted group-focus-within:text-blue transition-colors" />
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        value={formData.password}
-                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        className="w-full glass border-blue/10 pl-14 pr-14 py-4 text-sm focus:border-blue/40 focus:outline-none transition-all placeholder:text-theme-muted/50"
-                                        placeholder="••••••••"
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-5 top-1/2 -translate-y-1/2 text-theme-muted hover:text-blue transition-colors"
-                                    >
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            {isLogin && (
-                                <div className="text-right">
-                                    <button type="button" className="text-[10px] font-black uppercase tracking-widest text-theme-muted hover:text-blue transition-colors text-right">
-                                        Recover Key?
-                                    </button>
-                                </div>
+                                    </div>
+                                </motion.div>
                             )}
+                        </AnimatePresence>
 
-                            <Button
-                                type="submit"
-                                className="w-full py-5 text-xs font-black uppercase tracking-[0.3em] flex justify-center group"
-                                disabled={loading}
-                            >
-                                {loading ? (
-                                    <span className="flex items-center gap-3">
-                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                                        Processing...
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center gap-2">
-                                        {isLogin ? 'Initiate' : 'Establish'} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                                    </span>
-                                )}
-                            </Button>
-                        </form>
-                    </motion.div>
+                        <div>
+                            <label className="block text-xs text-white/60 font-semibold mb-3">
+                                Email Address
+                            </label>
+                            <div className="relative group">
+                                <Mail size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-indigo-400 transition-colors" />
+                                <input
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    className="w-full pl-14 pr-6 py-5 rounded-2xl text-white text-[15px] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                    style={{
+                                        background: 'rgba(255, 255, 255, 0.08)',
+                                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                                    }}
+                                    placeholder="hello@nexusbiz.ai"
+                                    required
+                                />
+                            </div>
+                        </div>
 
-                    {/* Right Accents (Visible on Desktop) */}
-                    <div className="hidden lg:flex lg:col-span-3 flex-col gap-8">
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="glass p-8 flex-1 flex flex-col justify-center glass-hover"
-                        >
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-theme-muted mb-6">Quick Connect</h3>
-                            <div className="space-y-4">
-                                <button className="w-full glass py-3 flex items-center justify-center gap-3 hover:bg-blue/10 transition-colors border-blue/10">
-                                    <div className="w-2 h-2 rounded-full bg-blue animate-pulse"></div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Google Portal</span>
-                                </button>
-                                <button className="w-full glass py-3 flex items-center justify-center gap-3 hover:bg-theme-secondary/10 transition-colors border-blue/10">
-                                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest">GitHub Bridge</span>
+                        <div>
+                            <label className="block text-xs text-white/60 font-semibold mb-3">
+                                Password
+                            </label>
+                            <div className="relative group">
+                                <Lock size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-indigo-400 transition-colors" />
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                    className="w-full pl-14 pr-14 py-5 rounded-2xl text-white text-[15px] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                                    style={{
+                                        background: 'rgba(255, 255, 255, 0.08)',
+                                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                                    }}
+                                    placeholder="Enter your password"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                        </motion.div>
+                        </div>
 
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="glass p-8 flex-1 flex flex-col justify-center glass-hover border-blue/20"
+                        {/* Submit Button */}
+                        <motion.button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-5 rounded-2xl text-white font-bold text-[15px] mt-4 flex items-center justify-center gap-2 group disabled:opacity-70"
+                            style={{
+                                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%)',
+                                backgroundSize: '200% 200%',
+                                animation: 'gradientBtn 3s ease infinite'
+                            }}
+                            whileHover={{ y: -3, boxShadow: '0 20px 50px rgba(99, 102, 241, 0.4)' }}
+                            whileTap={{ scale: 0.98 }}
                         >
-                            <button
-                                onClick={() => navigate('/generator')}
-                                className="text-center group"
-                            >
-                                <h3 className="text-xs font-black uppercase tracking-[0.2em] mb-4 text-blue">Guest Access</h3>
-                                <p className="text-[10px] text-theme-muted leading-relaxed uppercase font-bold group-hover:text-theme-primary transition-colors">
-                                    Continue to Generator without an account. Results will not be saved to identity.
-                                </p>
-                            </button>
-                        </motion.div>
+                            {loading ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    Processing...
+                                </>
+                            ) : (
+                                <>
+                                    Continue
+                                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                </>
+                            )}
+                        </motion.button>
+                    </form>
+
+                    {/* Divider */}
+                    <div className="flex items-center gap-4 my-8">
+                        <div className="flex-1 h-px bg-white/10" />
+                        <span className="text-xs text-white/40">or continue with</span>
+                        <div className="flex-1 h-px bg-white/10" />
                     </div>
 
-                </div>
+                    {/* Social Buttons */}
+                    <div className="flex gap-3">
+                        <motion.button
+                            type="button"
+                            className="flex-1 flex items-center justify-center gap-3 py-4 rounded-xl text-white font-semibold text-sm transition-all"
+                            style={{
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)'
+                            }}
+                            whileHover={{
+                                background: 'rgba(255, 255, 255, 0.1)',
+                                y: -2
+                            }}
+                        >
+                            <span className="text-lg">G</span> Google
+                        </motion.button>
+                        <motion.button
+                            type="button"
+                            className="flex-1 flex items-center justify-center gap-3 py-4 rounded-xl text-white font-semibold text-sm transition-all"
+                            style={{
+                                background: 'rgba(255, 255, 255, 0.05)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)'
+                            }}
+                            whileHover={{
+                                background: 'rgba(255, 255, 255, 0.1)',
+                                y: -2
+                            }}
+                        >
+                            <span className="text-lg">⌘</span> GitHub
+                        </motion.button>
+                    </div>
+                </motion.div>
 
-                {/* Footer Disclaimer */}
-                <p className="mt-12 text-center text-[10px] font-black uppercase tracking-[0.5em] text-theme-muted mb-4 opacity-50">
-                    Neural Engine Architecture v2.0.1 • Authorized Access Only
-                </p>
+                {/* Footer Text */}
+                <motion.p
+                    className="mt-8 text-xs text-white/30 text-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    By continuing, you agree to our Terms of Service
+                </motion.p>
             </div>
+
+            {/* Global Styles for Animations */}
+            <style>{`
+                @keyframes gradientShift {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                @keyframes gradientBtn {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+            `}</style>
         </div>
     );
 };
