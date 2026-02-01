@@ -1,59 +1,71 @@
 import React from 'react';
-import { Briefcase, DollarSign, Clock, ArrowRight } from 'lucide-react';
-import Card from '../common/Card';
+import { Briefcase, DollarSign, Clock, ArrowRight, TrendingUp } from 'lucide-react';
 import Button from '../common/Button';
 import type { BusinessIdea } from '../../types';
+import { cn } from '../common/Button';
 
 interface IdeaCardProps {
     idea: BusinessIdea;
     onViewPlan: () => void;
+    className?: string;
 }
 
-const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan }) => {
+const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
     return (
-        <Card className="flex flex-col h-full border-gray-400 group relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
-                <Briefcase size={80} />
+        <div className={cn(
+            "glass p-8 flex flex-col h-full group relative overflow-hidden glass-hover page-fade-in",
+            className
+        )}>
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <Briefcase size={120} />
             </div>
 
-            <div className="mb-6">
-                <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-widest text-blue mb-2">
-                    <span className="px-2 py-0.5 border border-blue">{idea.industry}</span>
-                    <span>•</span>
-                    <span>Score: {idea.difficultyScore}/10</span>
+            <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                    <span className="px-3 py-1 bg-blue/10 text-blue text-[10px] font-black uppercase tracking-widest border border-blue/20 rounded-full">
+                        {idea.industry}
+                    </span>
+                    <div className="flex items-center text-green-500 text-[10px] font-bold uppercase tracking-widest">
+                        <TrendingUp size={12} className="mr-1" /> Score: {idea.difficultyScore}/10
+                    </div>
                 </div>
-                <h3 className="text-2xl font-black uppercase tracking-tight mb-4 group-hover:text-blue transition-colors">
+
+                <h3 className="text-2xl font-black uppercase tracking-tight mb-4 group-hover:text-blue transition-colors duration-300">
                     {idea.title}
                 </h3>
-                <p className="text-gray-100 text-sm leading-relaxed mb-8">
+
+                <p className="text-theme-secondary text-sm leading-relaxed mb-8 line-clamp-3">
                     {idea.description}
                 </p>
             </div>
 
-            <div className="mt-auto space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+            <div className="mt-auto space-y-6 relative z-10">
+                <div className="grid grid-cols-2 gap-6 py-6 border-y border-white/5">
                     <div className="space-y-1">
-                        <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-gray-200">
+                        <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-theme-muted">
                             <DollarSign size={12} className="mr-1" /> Investment
                         </span>
-                        <span className="text-sm font-bold">{idea.investmentNeeded}</span>
+                        <span className="text-sm font-black text-theme-primary">{idea.investmentNeeded}</span>
                     </div>
                     <div className="space-y-1">
-                        <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-gray-200">
+                        <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-theme-muted">
                             <Clock size={12} className="mr-1" /> Timeline
                         </span>
-                        <span className="text-sm font-bold">{idea.timeline}</span>
+                        <span className="text-sm font-black text-theme-primary">{idea.timeline}</span>
                     </div>
                 </div>
 
                 <Button
                     onClick={onViewPlan}
-                    className="w-full mt-4 group/btn"
+                    className="w-full group/btn relative overflow-hidden"
                 >
-                    View Full Plan <ArrowRight className="ml-2 group-hover/btn:translate-x-1 transition-transform" size={16} />
+                    <span className="relative z-10 flex items-center justify-center">
+                        Synthesize Plan <ArrowRight className="ml-2 group-hover/btn:translate-x-1 transition-transform" size={16} />
+                    </span>
                 </Button>
             </div>
-        </Card>
+        </div>
     );
 };
 

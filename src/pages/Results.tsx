@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Filter, RotateCcw, LayoutGrid, List } from 'lucide-react';
+import { Filter, RotateCcw, LayoutGrid, List, BarChart3, PieChart, Activity } from 'lucide-react';
 import { useBusinessStore } from '../store/useBusinessStore';
 import IdeaCard from '../components/dashboard/IdeaCard';
 import Button from '../components/common/Button';
-import LoadingState from '../components/common/LoadingState';
-import Modal from '../components/common/Modal';
-
+import { PlanSkeleton } from '../components/common/Skeleton';
 const Results: React.FC = () => {
     const navigate = useNavigate();
     const { generatedIdeas, isLoading, setSelectedPlan } = useBusinessStore();
     const [sortBy, setSortBy] = useState('relevance');
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (isLoading) {
-        return <LoadingState />;
+        return (
+            <div className="min-h-screen pt-32 pb-20 bg-theme-primary">
+                <div className="max-w-7xl mx-auto px-4">
+                    <PlanSkeleton />
+                </div>
+            </div>
+        );
     }
 
     const handleTranslateToPlan = (idea: any) => {
-        // Mocking the detailed plan data conversion
         const mockPlan = {
             id: idea.id,
             title: idea.title,
@@ -61,133 +63,107 @@ const Results: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 bg-black">
+        <div className="min-h-screen pt-32 pb-20 bg-theme-primary transition-colors duration-500">
             <div className="max-w-7xl mx-auto px-4">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-                    <div className="border-l-4 border-blue pl-6">
-                        <h1 className="text-4xl font-black uppercase tracking-tighter mb-2">Architectural Results</h1>
-                        <p className="text-gray-200">Generated architectures based on your strategic inputs.</p>
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 page-fade-in">
+                    <div className="border-l-4 border-blue pl-8">
+                        <h1 className="text-5xl font-black uppercase tracking-tighter mb-4">
+                            Strategic <span className="text-blue">Architectures</span>
+                        </h1>
+                        <p className="text-theme-secondary text-lg">AI-synthesized business concepts ready for deployment.</p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
-                        <div className="flex bg-gray-500 border border-gray-400 p-1">
-                            <button className="px-3 py-1.5 bg-blue text-white"><LayoutGrid size={16} /></button>
-                            <button className="px-3 py-1.5 text-gray-200 hover:text-white"><List size={16} /></button>
+                        <div className="flex glass p-1 rounded-lg">
+                            <button className="px-3 py-1.5 bg-blue text-white rounded-md"><LayoutGrid size={16} /></button>
+                            <button className="px-3 py-1.5 text-theme-secondary hover:text-theme-primary transition-colors"><List size={16} /></button>
                         </div>
 
                         <div className="relative">
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}
-                                className="bg-gray-500 border border-gray-400 text-xs font-bold uppercase tracking-widest px-8 py-2.5 appearance-none focus:outline-none focus:border-blue"
+                                className="glass text-xs font-bold uppercase tracking-widest pl-10 pr-8 py-3 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-blue/50"
                             >
                                 <option value="relevance">By Relevance</option>
                                 <option value="investment">By Investment</option>
                                 <option value="difficulty">By Difficulty</option>
                             </select>
-                            <Filter size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200" />
+                            <Filter size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue" />
                         </div>
 
-                        <Button variant="outline" size="sm" onClick={() => navigate('/generator')}>
+                        <Button variant="outline" className="border-blue/20 hover:bg-blue/10" onClick={() => navigate('/generator')}>
                             <RotateCcw className="mr-2" size={14} /> Re-Calculate
                         </Button>
                     </div>
                 </div>
 
-                {/* Results Grid */}
+                {/* Bento Grid Layout */}
                 {generatedIdeas.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {generatedIdeas.map((idea) => (
-                            <IdeaCard
-                                key={idea.id}
-                                idea={idea}
-                                onViewPlan={() => handleTranslateToPlan(idea)}
-                            />
-                        ))}
+                    <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-8 auto-rows-[minmax(350px,auto)]">
+                        {generatedIdeas.map((idea, index) => {
+                            // Bento Logic: Different sizes based on index
+                            let colSpan = "md:col-span-3 lg:col-span-4"; // Default
+                            if (index === 0) colSpan = "md:col-span-6 lg:col-span-8"; // Big featured item
+                            if (index === 1) colSpan = "md:col-span-3 lg:col-span-4";
+                            if (index === 2) colSpan = "md:col-span-3 lg:col-span-4";
+                            if (index === 3) colSpan = "md:col-span-3 lg:col-span-8"; // Wide item
+
+                            return (
+                                <IdeaCard
+                                    key={idea.id}
+                                    idea={idea}
+                                    onViewPlan={() => handleTranslateToPlan(idea)}
+                                    className={colSpan}
+                                />
+                            );
+                        })}
+
+                        {/* Bento Statistics Card */}
+                        <div className="md:col-span-3 lg:col-span-4 glass p-8 flex flex-col justify-between glass-hover page-fade-in" style={{ animationDelay: '0.2s' }}>
+                            <div>
+                                <BarChart3 className="text-blue mb-6" size={32} />
+                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-theme-muted mb-2">Market Sentiment</h3>
+                                <div className="text-3xl font-black italic">Bullish Phase</div>
+                            </div>
+                            <div className="text-theme-muted text-xs leading-relaxed">
+                                Current strategic alignment suggests a 82% success rate for high-innovation models.
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-3 lg:col-span-4 glass p-8 flex items-center justify-between glass-hover page-fade-in" style={{ animationDelay: '0.3s' }}>
+                            <div>
+                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-theme-muted mb-1">Generated Concepts</h3>
+                                <div className="text-4xl font-black">{generatedIdeas.length}</div>
+                            </div>
+                            <div className="w-12 h-12 bg-blue/10 rounded-full flex items-center justify-center text-blue">
+                                <Activity size={24} />
+                            </div>
+                        </div>
+
+                        <div className="md:col-span-6 lg:col-span-4 glass p-8 flex flex-col justify-between glass-hover page-fade-in" style={{ animationDelay: '0.4s' }}>
+                            <div className="flex justify-between items-start">
+                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-theme-muted">Risk Profile</h3>
+                                <PieChart className="text-blue" size={20} />
+                            </div>
+                            <div className="space-y-4">
+                                <div className="h-2 bg-blue/10 rounded-full overflow-hidden">
+                                    <div className="h-full bg-blue w-2/3"></div>
+                                </div>
+                                <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
+                                    <span>Moderate Risk</span>
+                                    <span className="text-blue">Optimized</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 ) : (
-                    <div className="py-32 text-center border border-dashed border-gray-400">
-                        <h2 className="text-xl font-bold uppercase tracking-widest text-gray-200 mb-6">No architectures found</h2>
-                        <Button onClick={() => navigate('/generator')}>Return to Generator</Button>
+                    <div className="py-32 text-center glass border-dashed rounded-2xl page-fade-in">
+                        <h2 className="text-2xl font-black title-font uppercase tracking-widest text-theme-secondary mb-8">System standby: No architectures synthesized</h2>
+                        <Button onClick={() => navigate('/generator')} className="px-10">Return to Strategic Intelligence Engine</Button>
                     </div>
                 )}
-
-                {/* Comparison Table Placeholder */}
-                <section className="mt-24 border-t border-gray-400 pt-24">
-                    <div className="mb-12 text-center">
-                        <h2 className="text-3xl font-black uppercase tracking-tighter mb-4">Metric Comparison</h2>
-                        <p className="text-gray-200">Side-by-side technical evaluation of generated concepts.</p>
-                    </div>
-
-                    <div className="overflow-x-auto">
-                        <table className="w-full border-collapse bg-gray-500 border border-gray-400 text-left">
-                            <thead>
-                                <tr className="bg-gray-400">
-                                    <th className="p-4 text-[10px] font-black uppercase tracking-widest border border-gray-400">Metric</th>
-                                    {generatedIdeas.map(idea => (
-                                        <th key={idea.id} className="p-4 text-[10px] font-black uppercase tracking-widest border border-gray-400 text-blue">
-                                            {idea.title}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td className="p-4 text-[10px] font-bold uppercase tracking-widest border border-gray-400">Difficulty</td>
-                                    {generatedIdeas.map(idea => (
-                                        <td key={idea.id} className="p-4 text-sm font-bold border border-gray-400">{idea.difficultyScore}/10</td>
-                                    ))}
-                                </tr>
-                                <tr>
-                                    <td className="p-4 text-[10px] font-bold uppercase tracking-widest border border-gray-400">Investment</td>
-                                    {generatedIdeas.map(idea => (
-                                        <td key={idea.id} className="p-4 text-sm font-bold border border-gray-400">{idea.investmentNeeded}</td>
-                                    ))}
-                                </tr>
-                                <tr>
-                                    <td className="p-4 text-[10px] font-bold uppercase tracking-widest border border-gray-400">ROI Potential</td>
-                                    {generatedIdeas.map(idea => (
-                                        <td key={idea.id} className="p-4 text-sm font-bold border border-gray-400">{idea.potentialROI}</td>
-                                    ))}
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                {/* Save/Download Modal */}
-                <Modal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    title="Archive Selection"
-                    footer={
-                        <div className="flex gap-4">
-                            <Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                            <Button onClick={() => setIsModalOpen(false)}>Confirm Archive</Button>
-                        </div>
-                    }
-                >
-                    <div className="space-y-4">
-                        <p className="text-gray-200 text-sm">
-                            Select the archival format for the generated business architecture.
-                        </p>
-                        <div className="grid grid-cols-1 gap-3">
-                            <button className="flex items-center justify-between p-4 bg-gray-400 border border-gray-300 hover:border-blue transition-colors">
-                                <span className="text-xs font-black uppercase tracking-widest">Digital PDF Strategy</span>
-                                <span className="text-[10px] text-gray-200">Recommended</span>
-                            </button>
-                            <button className="flex items-center justify-between p-4 bg-gray-400 border border-gray-300 hover:border-blue transition-colors">
-                                <span className="text-xs font-black uppercase tracking-widest">Structured JSON Data</span>
-                                <span className="text-[10px] text-gray-200">API Compatible</span>
-                            </button>
-                            <button className="flex items-center justify-between p-4 bg-gray-400 border border-gray-300 hover:border-blue transition-colors">
-                                <span className="text-xs font-black uppercase tracking-widest">Enterprise CSV Model</span>
-                                <span className="text-[10px] text-gray-200">Spreadsheet Optimized</span>
-                            </button>
-                        </div>
-                    </div>
-                </Modal>
             </div>
         </div>
     );
