@@ -209,3 +209,52 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Premium Enhancements: Background Blobs */
+.bg-blob {
+  position: absolute;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, var(--blue) 0%, transparent 70%);
+  filter: blur(120px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.bg-blob-purple {
+  background: radial-gradient(circle, #8b5cf6 0%, transparent 70%);
+  opacity: 0.08;
+}
+
+.page-exit {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.animate-in {
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* PWA Splash/Status Bar Color */
+:root {
+  --theme-color: #000000;
+}
+
+.light {
+  --theme-color: #FFFFFF;
+}

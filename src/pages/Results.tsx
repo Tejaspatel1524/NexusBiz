@@ -9,6 +9,22 @@ const Results: React.FC = () => {
     const navigate = useNavigate();
     const { generatedIdeas, isLoading, setSelectedPlan } = useBusinessStore();
     const [sortBy, setSortBy] = useState('relevance');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showOnboarding, setShowOnboarding] = useState(() => {
+        return !localStorage.getItem('nexusbiz_onboarding_complete');
+    });
+    const [currentTip, setCurrentTip] = useState(0);
+
+    const onboardingTips = [
+        { title: "Strategic Bento", text: "Your results are organized in a high-density Bento Grid for quick scanning." },
+        { title: "Glass Architectures", text: "Cards use Glassmorphism for clarity and modern aesthetic depth." },
+        { title: "Search & Filter", text: "Use the new real-time search to instantly find specific business concepts." }
+    ];
+
+    const completeOnboarding = () => {
+        localStorage.setItem('nexusbiz_onboarding_complete', 'true');
+        setShowOnboarding(false);
+    };
 
     if (isLoading) {
         return (
@@ -20,7 +36,14 @@ const Results: React.FC = () => {
         );
     }
 
+    const filteredIdeas = generatedIdeas.filter(idea =>
+        idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        idea.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        idea.industry.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     const handleTranslateToPlan = (idea: any) => {
+        // ... (existing logic)
         const mockPlan = {
             id: idea.id,
             title: idea.title,
@@ -63,10 +86,14 @@ const Results: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 bg-theme-primary transition-colors duration-500">
-            <div className="max-w-7xl mx-auto px-4">
+        <div className="min-h-screen pt-32 pb-20 bg-theme-primary transition-colors duration-500 relative overflow-hidden">
+            {/* Visual Background Accents */}
+            <div className="bg-blob -top-20 -left-20 animate-pulse"></div>
+            <div className="bg-blob bg-blob-purple bottom-40 -right-20"></div>
+
+            <div className="max-w-7xl mx-auto px-4 relative z-10">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 page-fade-in">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8 page-fade-in">
                     <div className="border-l-4 border-blue pl-8">
                         <h1 className="text-5xl font-black uppercase tracking-tighter mb-4">
                             Strategic <span className="text-blue">Architectures</span>
@@ -75,6 +102,20 @@ const Results: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
+                        {/* Search Implementation */}
+                        <div className="relative group">
+                            <input
+                                type="text"
+                                placeholder="Filter concepts..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="glass pl-10 pr-4 py-3 rounded-lg text-xs font-bold uppercase tracking-widest w-64 focus:w-80 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue/30"
+                            />
+                            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-theme-muted group-focus-within:text-blue transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                            </div>
+                        </div>
+
                         <div className="flex glass p-1 rounded-lg">
                             <button className="px-3 py-1.5 bg-blue text-white rounded-md"><LayoutGrid size={16} /></button>
                             <button className="px-3 py-1.5 text-theme-secondary hover:text-theme-primary transition-colors"><List size={16} /></button>
@@ -100,9 +141,9 @@ const Results: React.FC = () => {
                 </div>
 
                 {/* Bento Grid Layout */}
-                {generatedIdeas.length > 0 ? (
+                {filteredIdeas.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-8 auto-rows-[minmax(350px,auto)]">
-                        {generatedIdeas.map((idea, index) => {
+                        {filteredIdeas.map((idea, index) => {
                             // Bento Logic: Different sizes based on index
                             let colSpan = "md:col-span-3 lg:col-span-4"; // Default
                             if (index === 0) colSpan = "md:col-span-6 lg:col-span-8"; // Big featured item
@@ -165,6 +206,44 @@ const Results: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* Onboarding Tour Overlay */}
+            {showOnboarding && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in">
+                    <div className="glass max-w-md w-full p-10 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue opacity-10 -mr-16 -mt-16 rotate-45" />
+
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="w-8 h-8 bg-blue flex items-center justify-center text-white text-xs font-black">
+                                    {currentTip + 1}
+                                </div>
+                                <h3 className="text-xl font-black uppercase tracking-tighter">
+                                    {onboardingTips[currentTip].title}
+                                </h3>
+                            </div>
+
+                            <p className="text-theme-secondary leading-relaxed mb-10">
+                                {onboardingTips[currentTip].text}
+                            </p>
+
+                            <div className="flex items-center justify-between">
+                                <div className="flex gap-1.5">
+                                    {onboardingTips.map((_, i) => (
+                                        <div key={i} className={`h-1 rounded-full transition-all duration-300 ${i === currentTip ? 'w-8 bg-blue' : 'w-2 bg-theme-muted'}`} />
+                                    ))}
+                                </div>
+
+                                {currentTip < onboardingTips.length - 1 ? (
+                                    <Button onClick={() => setCurrentTip(prev => prev + 1)}>Next Aspect</Button>
+                                ) : (
+                                    <Button onClick={completeOnboarding}>Launch NexusBiz</Button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
