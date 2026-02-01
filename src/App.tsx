@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './i18n';
 import Navbar from './components/layout/Navbar';
-import Landing from './pages/Landing';
 import Generator from './pages/Generator';
 import Results from './pages/Results';
 import BusinessPlan from './pages/BusinessPlan';
@@ -36,7 +35,7 @@ const App: React.FC = () => {
           <main>
             <Routes>
               {/* Public Routes */}
-              <Route path="/" element={<Landing />} />
+              <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/about" element={<About />} />
               <Route path="/login" element={<Login />} />
