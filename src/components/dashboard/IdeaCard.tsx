@@ -1,10 +1,11 @@
-import React from 'react';
-import { Briefcase, DollarSign, Clock, ArrowRight, Bookmark } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { Briefcase, DollarSign, Clock, ArrowRight, Bookmark, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { BusinessIdea } from '../../types';
 import { cn } from '../common/Button';
 import { useSavedIdeasStore } from '../../store/useSavedIdeasStore';
 import SuccessScoreBadge, { calculateSuccessScore } from '../common/SuccessScoreBadge';
+import SparklineChart, { generateRevenueData } from '../common/SparklineChart';
 
 interface IdeaCardProps {
     idea: BusinessIdea;
@@ -97,6 +98,22 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
             </div>
 
             <div className="mt-auto space-y-6 relative z-10">
+                {/* Mini Revenue Chart */}
+                <div className="py-4 border-t border-theme">
+                    <div className="flex items-center justify-between mb-3">
+                        <span className="flex items-center text-[10px] font-semibold uppercase tracking-widest text-theme-muted">
+                            <TrendingUp size={12} className="mr-1" /> Revenue Projection
+                        </span>
+                    </div>
+                    <SparklineChart
+                        data={useMemo(() => generateRevenueData(idea.investmentNeeded, idea.timeline), [idea.investmentNeeded, idea.timeline])}
+                        width={200}
+                        height={45}
+                        color="#6366f1"
+                        showArea={true}
+                    />
+                </div>
+
                 <div className="grid grid-cols-2 gap-6 py-6 border-y border-theme">
                     <div className="space-y-1">
                         <span className="flex items-center text-[10px] font-semibold uppercase tracking-widest text-theme-muted">
