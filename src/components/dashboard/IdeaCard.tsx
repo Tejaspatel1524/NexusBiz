@@ -1,9 +1,10 @@
 import React from 'react';
-import { Briefcase, DollarSign, Clock, ArrowRight, TrendingUp, Bookmark } from 'lucide-react';
+import { Briefcase, DollarSign, Clock, ArrowRight, Bookmark } from 'lucide-react';
 import { motion } from 'framer-motion';
 import type { BusinessIdea } from '../../types';
 import { cn } from '../common/Button';
 import { useSavedIdeasStore } from '../../store/useSavedIdeasStore';
+import SuccessScoreBadge, { calculateSuccessScore } from '../common/SuccessScoreBadge';
 
 interface IdeaCardProps {
     idea: BusinessIdea;
@@ -32,6 +33,12 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
         }
     };
 
+    const successScore = calculateSuccessScore(
+        idea.difficultyScore,
+        idea.investmentNeeded,
+        idea.timeline
+    );
+
     return (
         <div className={cn(
             "liquid-glass p-8 flex flex-col h-full group relative overflow-hidden",
@@ -58,8 +65,17 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
                 <Bookmark size={18} fill={isSaved ? "currentColor" : "none"} />
             </motion.button>
 
+            {/* Success Score Badge - positioned top right after bookmark */}
+            <div className="absolute top-16 right-4 z-10">
+                <SuccessScoreBadge
+                    score={successScore}
+                    size="md"
+                    showLabel={true}
+                />
+            </div>
+
             <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4 pr-12">
+                <div className="flex items-center mb-4 pr-20">
                     <span className="px-3 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-widest"
                         style={{
                             background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2))',
@@ -69,12 +85,9 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
                     >
                         {idea.industry}
                     </span>
-                    <div className="flex items-center text-green-400 text-[10px] font-bold uppercase tracking-widest">
-                        <TrendingUp size={12} className="mr-1" /> Score: {idea.difficultyScore}/10
-                    </div>
                 </div>
 
-                <h3 className="text-2xl font-black tracking-tight mb-4 text-theme-primary group-hover:text-indigo-400 transition-colors duration-300">
+                <h3 className="text-2xl font-black tracking-tight mb-4 text-theme-primary group-hover:text-indigo-400 transition-colors duration-300 pr-20">
                     {idea.title}
                 </h3>
 
