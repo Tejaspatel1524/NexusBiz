@@ -109,8 +109,18 @@ const Navbar: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Mobile Menu Button */}
-                    <div className="md:hidden">
+                    {/* Mobile: Theme Toggle + Menu Button */}
+                    <div className="md:hidden flex items-center gap-3">
+                        {/* Theme Toggle for Mobile */}
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 border border-gray-400 text-gray-100 hover:border-blue hover:text-blue transition-all duration-300"
+                            aria-label="Toggle theme"
+                        >
+                            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+                        </button>
+
+                        {/* Hamburger Menu Button */}
                         <button
                             onClick={() => setIsOpen(!isOpen)}
                             className="text-gray-100 hover:text-white"
