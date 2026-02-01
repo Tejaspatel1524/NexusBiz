@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nexusbiz-v1';
+const CACHE_NAME = 'nexusbiz-v2';
 const urlsToCache = [
     '/',
     '/index.html',
