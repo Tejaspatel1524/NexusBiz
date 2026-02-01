@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Filter, RotateCcw, LayoutGrid, List, BarChart3, PieChart, Activity } from 'lucide-react';
+import { Filter, RotateCcw, LayoutGrid, List, PieChart, Activity, TrendingUp } from 'lucide-react';
 import { useBusinessStore } from '../store/useBusinessStore';
 import IdeaCard from '../components/dashboard/IdeaCard';
 import Button from '../components/common/Button';
 import { PlanSkeleton } from '../components/common/Skeleton';
+import AnimatedCounter from '../components/common/AnimatedCounter';
 const Results: React.FC = () => {
     const navigate = useNavigate();
     const { generatedIdeas, isLoading, setSelectedPlan } = useBusinessStore();
@@ -161,25 +162,35 @@ const Results: React.FC = () => {
                             );
                         })}
 
-                        {/* Bento Statistics Card */}
-                        <div className="md:col-span-3 lg:col-span-4 glass p-8 flex flex-col justify-between glass-hover page-fade-in" style={{ animationDelay: '0.2s' }}>
+                        {/* Bento Statistics Card - Market Sentiment */}
+                        <div className="md:col-span-3 lg:col-span-4 liquid-glass p-8 flex flex-col justify-between" style={{ animationDelay: '0.2s' }}>
                             <div>
-                                <BarChart3 className="text-blue mb-6" size={32} />
-                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-theme-muted mb-2">Market Sentiment</h3>
-                                <div className="text-3xl font-black italic">Bullish Phase</div>
+                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mb-6">
+                                    <TrendingUp className="text-white" size={28} />
+                                </div>
+                                <h3 className="text-xs font-semibold uppercase tracking-widest text-theme-muted mb-3">Market Sentiment</h3>
+                                <div className="text-3xl font-black gradient-text">Bullish Phase</div>
                             </div>
-                            <div className="text-theme-muted text-xs leading-relaxed">
-                                Current strategic alignment suggests a 82% success rate for high-innovation models.
+                            <div className="mt-4 pt-4 border-t border-theme">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-theme-muted text-xs">Success Rate:</span>
+                                    <span className="text-2xl font-bold text-green-400">
+                                        <AnimatedCounter value={82} suffix="%" duration={1.5} />
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="md:col-span-3 lg:col-span-4 glass p-8 flex items-center justify-between glass-hover page-fade-in" style={{ animationDelay: '0.3s' }}>
+                        {/* Generated Concepts Counter */}
+                        <div className="md:col-span-3 lg:col-span-4 liquid-glass p-8 flex items-center justify-between" style={{ animationDelay: '0.3s' }}>
                             <div>
-                                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-theme-muted mb-1">Generated Concepts</h3>
-                                <div className="text-4xl font-black">{generatedIdeas.length}</div>
+                                <h3 className="text-xs font-semibold uppercase tracking-widest text-theme-muted mb-2">Generated Concepts</h3>
+                                <div className="text-5xl font-black gradient-text">
+                                    <AnimatedCounter value={generatedIdeas.length} duration={1} />
+                                </div>
                             </div>
-                            <div className="w-12 h-12 bg-blue/10 rounded-full flex items-center justify-center text-blue">
-                                <Activity size={24} />
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                                <Activity size={28} className="text-white" />
                             </div>
                         </div>
 
