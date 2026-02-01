@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Filter, RotateCcw, LayoutGrid, List, PieChart, Activity, TrendingUp, GitCompare } from 'lucide-react';
+import { Filter, RotateCcw, LayoutGrid, List, PieChart, Activity, TrendingUp, GitCompare, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useBusinessStore } from '../store/useBusinessStore';
 import { useComparisonStore } from '../store/useComparisonStore';
@@ -274,41 +274,56 @@ const Results: React.FC = () => {
                 </div>
             )}
             {/* Comparison Floating Action Bar */}
+            {/* Comparison Floating Action Bar */}
             <AnimatePresence>
-                {isCompareMode && selectedIdeas.length > 0 && (
+                {isCompareMode && (
                     <motion.div
                         initial={{ y: 100, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: 100, opacity: 0 }}
-                        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-4 bg-gray-900/90 backdrop-blur-md text-white px-6 py-4 rounded-2xl border border-indigo-500/50 shadow-2xl shadow-indigo-500/20"
+                        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-4 bg-gray-900/95 backdrop-blur-md text-white px-6 py-4 rounded-2xl border border-indigo-500/50 shadow-2xl shadow-indigo-500/20"
                     >
-                        <div className="flex items-center gap-3 pr-4 border-r border-white/10">
-                            <div className="flex -space-x-2">
-                                {selectedIdeas.map((idea) => (
-                                    <div key={idea.id} className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 border-2 border-gray-900 flex items-center justify-center text-[10px] font-bold">
-                                        {idea.title.charAt(0)}
-                                    </div>
-                                ))}
+                        {selectedIdeas.length === 0 ? (
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-theme-tertiary border-2 border-dashed border-theme-muted flex items-center justify-center text-theme-muted">
+                                    <GitCompare size={14} />
+                                </div>
+                                <span className="text-sm font-medium text-theme-secondary">
+                                    Select up to <span className="text-indigo-400 font-bold">3 ideas</span> to compare
+                                </span>
                             </div>
-                            <span className="text-sm font-medium">
-                                <span className="text-indigo-400 font-bold">{selectedIdeas.length}</span>/3 Selected
-                            </span>
-                        </div>
+                        ) : (
+                            <div className="flex items-center gap-3 pr-4 border-r border-white/10">
+                                <div className="flex -space-x-2">
+                                    {selectedIdeas.map((idea) => (
+                                        <div key={idea.id} className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 border-2 border-gray-900 flex items-center justify-center text-[10px] font-bold shadow-lg">
+                                            {idea.title.charAt(0)}
+                                        </div>
+                                    ))}
+                                </div>
+                                <span className="text-sm font-medium">
+                                    <span className="text-indigo-400 font-bold">{selectedIdeas.length}</span>/3 Selected
+                                </span>
+                            </div>
+                        )}
 
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={clearSelection}
-                                className="px-4 py-2 rounded-lg hover:bg-white/10 text-sm font-medium transition-colors"
-                            >
-                                Clear
-                            </button>
+                        <div className="flex items-center gap-2 pl-2">
+                            {selectedIdeas.length > 0 && (
+                                <button
+                                    onClick={clearSelection}
+                                    className="px-3 py-2 rounded-lg hover:bg-white/10 text-xs font-medium transition-colors text-theme-muted hover:text-white"
+                                >
+                                    Clear
+                                </button>
+                            )}
                             <button
                                 onClick={openModal}
                                 disabled={selectedIdeas.length < 2}
-                                className={`px-6 py-2 rounded-lg font-bold text-sm bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25 transition-all ${selectedIdeas.length < 2 ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                                className={`px-6 py-2 rounded-lg font-bold text-sm bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25 transition-all flex items-center gap-2 ${selectedIdeas.length < 2 ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:scale-105'
                                     }`}
                             >
                                 Compare Now
+                                {selectedIdeas.length >= 2 && <ArrowRight size={14} />}
                             </button>
                         </div>
                     </motion.div>

@@ -156,13 +156,26 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
 
                 <motion.button
                     onClick={onViewPlan}
-                    className="liquid-btn w-full py-4 flex items-center justify-center gap-2"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    disabled={isCompareMode}
+                    className={`liquid-btn w-full py-4 flex items-center justify-center gap-2 ${isCompareMode ? 'opacity-50 cursor-not-allowed grayscale' : ''}`}
+                    whileHover={!isCompareMode ? { scale: 1.02 } : {}}
+                    whileTap={!isCompareMode ? { scale: 0.98 } : {}}
                 >
                     Synthesize Plan <ArrowRight size={16} />
                 </motion.button>
             </div>
+
+            {/* Selection Overlay for Compare Mode */}
+            {isCompareMode && (
+                <div
+                    className="absolute inset-0 z-30 cursor-pointer flex items-center justify-center bg-black/20 backdrop-blur-[1px] opacity-0 hover:opacity-100 transition-opacity"
+                    onClick={() => canSelect && toggleIdeaSelection(idea)}
+                >
+                    <div className={`px-6 py-3 rounded-xl font-bold text-white shadow-xl transform scale-110 ${isSelected ? 'bg-red-500' : 'bg-indigo-600'}`}>
+                        {isSelected ? 'Deselect Idea' : 'Select to Compare'}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
