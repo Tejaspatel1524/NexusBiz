@@ -1,3 +1,18 @@
+/**
+ * Main App Component
+ * ==================
+ * 
+ * WHAT THIS FILE DOES:
+ * - Sets up all routes for the application
+ * - Initializes authentication on app startup
+ * - Applies theme (dark/light mode)
+ * - Provides language context
+ * 
+ * AUTH ROUTES ADDED:
+ * - /login - Login page for existing users
+ * - /signup - Registration page for new users
+ */
+
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n';
@@ -10,10 +25,22 @@ import Pricing from './pages/Pricing';
 import About from './pages/About';
 import Settings from './pages/Settings';
 import FeatureDetail from './pages/FeatureDetail';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 import { useThemeStore } from './store/useThemeStore';
+import { useAuthStore } from './store/useAuthStore';
 
 const App: React.FC = () => {
   const { isDarkMode } = useThemeStore();
+  const { initializeAuth, isInitialized } = useAuthStore();
+
+  // Initialize authentication on app startup
+  // This checks if there's a stored token and validates it
+  useEffect(() => {
+    if (!isInitialized) {
+      initializeAuth();
+    }
+  }, [isInitialized, initializeAuth]);
 
   // Initialize theme on mount
   useEffect(() => {
@@ -33,6 +60,7 @@ const App: React.FC = () => {
           <Navbar />
           <main>
             <Routes>
+              {/* Public Routes */}
               <Route path="/" element={<Landing />} />
               <Route path="/generator" element={<Generator />} />
               <Route path="/results" element={<Results />} />
@@ -41,6 +69,10 @@ const App: React.FC = () => {
               <Route path="/about" element={<About />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/feature/:featureId" element={<FeatureDetail />} />
+
+              {/* Auth Routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
             </Routes>
           </main>
         </div>

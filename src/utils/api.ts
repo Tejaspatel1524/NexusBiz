@@ -1,10 +1,47 @@
 /**
  * API Service for connecting to backend
  * Uses relative URLs that work on both localhost and Vercel
+ * 
+ * AUTHENTICATION:
+ * Automatically includes JWT token in Authorization header
+ * when user is logged in (token stored in localStorage)
  */
 
 // Use relative URL - works on localhost (via Vite proxy) and Vercel (serverless functions)
 const API_BASE_URL = '/api';
+
+/**
+ * Get auth token from localStorage
+ * The token is stored by useAuthStore when user logs in
+ */
+function getAuthToken(): string | null {
+    try {
+        const authData = localStorage.getItem('nexusbiz-auth');
+        if (authData) {
+            const parsed = JSON.parse(authData);
+            return parsed.state?.token || null;
+        }
+    } catch {
+        // Ignore parse errors
+    }
+    return null;
+}
+
+/**
+ * Get headers with optional auth token
+ */
+function getAuthHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+    };
+
+    const token = getAuthToken();
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return headers;
+}
 
 export interface BusinessIdeaFromAPI {
     id: string;
@@ -43,9 +80,7 @@ export async function generateIdeas(
     try {
         const response = await fetch(`${API_BASE_URL}/ai/ollama/simple-generate-ideas`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: getAuthHeaders(),
             body: JSON.stringify(inputs),
         });
 
@@ -85,7 +120,7 @@ export async function generateBusinessPlan(
     const response = await fetch(`${API_BASE_URL}/ai/ollama/business-plan`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
             'Accept': 'text/event-stream',
         },
         body: JSON.stringify({ idea, userInputs }),
@@ -154,7 +189,7 @@ export async function chat(
     const response = await fetch(`${API_BASE_URL}/ai/ollama/chat`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
             'Accept': 'text/event-stream',
         },
         body: JSON.stringify({

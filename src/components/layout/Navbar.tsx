@@ -1,9 +1,26 @@
+/**
+ * Navbar Component
+ * =================
+ * 
+ * WHAT THIS COMPONENT DOES:
+ * - Shows navigation links across the app
+ * - Shows user authentication status
+ * - When logged out: Shows Login/Sign Up buttons
+ * - When logged in: Shows user's name with dropdown (Profile, Settings, Logout)
+ * 
+ * WHY USERS NEED THIS:
+ * - Easy navigation between pages
+ * - See their login status at a glance
+ * - Quick access to logout
+ */
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, User, Briefcase, Settings, LogIn, LayoutDashboard, Moon, Sun } from 'lucide-react';
+import { Menu, X, User, Briefcase, Settings, LogIn, LogOut, LayoutDashboard, Moon, Sun, UserPlus } from 'lucide-react';
 import { cn } from '../common/Button';
 import { useLanguage } from '../../i18n';
 import { useThemeStore } from '../../store/useThemeStore';
+import { useAuthStore } from '../../store/useAuthStore';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +31,10 @@ const Navbar: React.FC = () => {
     const { t } = useLanguage();
     const { isDarkMode, toggleTheme } = useThemeStore();
 
+    // Auth state
+    const { user, logout } = useAuthStore();
+    const isLoggedIn = !!user;
+
     const navLinks = [
         { name: t('home'), path: '/' },
         { name: t('generator'), path: '/generator' },
@@ -22,11 +43,17 @@ const Navbar: React.FC = () => {
         { name: t('about'), path: '/about' },
     ];
 
-    const userMenuItems = [
-        { name: t('dashboard'), icon: LayoutDashboard, action: () => navigate('/results') },
-        { name: t('settings'), icon: Settings, action: () => navigate('/settings') },
-        { name: t('login'), icon: LogIn, action: () => navigate('/login') },
-    ];
+    // Menu items change based on login status
+    const userMenuItems = isLoggedIn
+        ? [
+            { name: t('dashboard'), icon: LayoutDashboard, action: () => navigate('/results') },
+            { name: t('settings'), icon: Settings, action: () => navigate('/settings') },
+            { name: 'Logout', icon: LogOut, action: () => { logout(); navigate('/'); }, danger: true },
+        ]
+        : [
+            { name: t('login'), icon: LogIn, action: () => navigate('/login') },
+            { name: 'Sign Up', icon: UserPlus, action: () => navigate('/signup'), highlight: true },
+        ];
 
 
     // Close dropdown when clicking outside
@@ -39,6 +66,18 @@ const Navbar: React.FC = () => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    /**
+     * Get user initials for avatar
+     */
+    const getUserInitials = () => {
+        if (!user?.fullName) return 'U';
+        const names = user.fullName.split(' ');
+        if (names.length >= 2) {
+            return `${names[0][0]}${names[1][0]}`.toUpperCase();
+        }
+        return names[0][0].toUpperCase();
+    };
 
     return (
         <nav className="fixed top-0 left-0 w-full z-50 liquid-glass-subtle border-b border-theme">
@@ -74,17 +113,52 @@ const Navbar: React.FC = () => {
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                                 className={cn(
-                                    "p-2 border transition-all duration-200",
+                                    "flex items-center gap-2 px-3 py-2 border transition-all duration-200",
+                                    isLoggedIn
+                                        ? "border-blue bg-blue/10"
+                                        : "border-gray-400",
                                     userMenuOpen
                                         ? "bg-blue border-blue text-white"
-                                        : "border-gray-400 text-gray-100 hover:border-blue hover:text-blue"
+                                        : "text-gray-100 hover:border-blue hover:text-blue"
                                 )}
                             >
-                                <User size={18} />
+                                {isLoggedIn ? (
+                                    <>
+                                        {/* User Avatar with Initials */}
+                                        <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white">
+                                            {getUserInitials()}
+                                        </div>
+                                        <span className="text-xs font-bold uppercase tracking-wider max-w-[100px] truncate">
+                                            {user?.fullName?.split(' ')[0]}
+                                        </span>
+                                    </>
+                                ) : (
+                                    <User size={18} />
+                                )}
                             </button>
 
                             {userMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-black border border-gray-400 shadow-xl z-50">
+                                <div className="absolute right-0 mt-2 w-56 bg-black border border-gray-400 shadow-xl z-50">
+                                    {/* User info header (only when logged in) */}
+                                    {isLoggedIn && (
+                                        <div className="px-4 py-3 border-b border-gray-700">
+                                            <p className="text-sm font-bold text-white truncate">{user?.fullName}</p>
+                                            <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                                            <div className="mt-2">
+                                                <span className={cn(
+                                                    "text-xs font-bold uppercase px-2 py-0.5",
+                                                    user?.subscriptionTier === 'pro'
+                                                        ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white"
+                                                        : user?.subscriptionTier === 'enterprise'
+                                                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+                                                            : "bg-gray-700 text-gray-300"
+                                                )}>
+                                                    {user?.subscriptionTier || 'free'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {userMenuItems.map((item) => (
                                         <button
                                             key={item.name}
@@ -92,7 +166,14 @@ const Navbar: React.FC = () => {
                                                 item.action();
                                                 setUserMenuOpen(false);
                                             }}
-                                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-100 hover:bg-gray-500 hover:text-blue transition-colors text-left"
+                                            className={cn(
+                                                "w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors text-left",
+                                                (item as any).danger
+                                                    ? "text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                                                    : (item as any).highlight
+                                                        ? "text-blue hover:bg-blue/10"
+                                                        : "text-gray-100 hover:bg-gray-500 hover:text-blue"
+                                            )}
                                         >
                                             <item.icon size={16} />
                                             <span>{item.name}</span>
@@ -150,7 +231,15 @@ const Navbar: React.FC = () => {
                             {link.name}
                         </Link>
                     ))}
+
+                    {/* Mobile user section */}
                     <div className="pt-4 border-t border-gray-400 space-y-2">
+                        {isLoggedIn && (
+                            <div className="pb-3 mb-2 border-b border-gray-600">
+                                <p className="text-sm font-bold text-white">{user?.fullName}</p>
+                                <p className="text-xs text-gray-400">{user?.email}</p>
+                            </div>
+                        )}
                         {userMenuItems.map((item) => (
                             <button
                                 key={item.name}
@@ -158,7 +247,14 @@ const Navbar: React.FC = () => {
                                     item.action();
                                     setIsOpen(false);
                                 }}
-                                className="flex items-center gap-3 text-gray-100 font-bold uppercase tracking-widest text-sm w-full text-left py-2"
+                                className={cn(
+                                    "flex items-center gap-3 font-bold uppercase tracking-widest text-sm w-full text-left py-2",
+                                    (item as any).danger
+                                        ? "text-red-400"
+                                        : (item as any).highlight
+                                            ? "text-blue"
+                                            : "text-gray-100"
+                                )}
                             >
                                 <item.icon size={18} />
                                 <span>{item.name}</span>
@@ -172,4 +268,3 @@ const Navbar: React.FC = () => {
 };
 
 export default Navbar;
-

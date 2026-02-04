@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusBiz - AI Business Generator | Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #0ea5e9;
+            --dark: #0f172a;
+            --darker: #020617;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            padding: 60px 80px;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Slide 1 - Title */
+        .slide-title {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+        }
+
+        .slide-title::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        .slide-title h1 {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-title h2 {
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--muted);
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-title .tagline {
+            font-size: 1.2rem;
+            padding: 15px 40px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-title .hero-image {
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%);
+            width: 45%;
+            height: 70%;
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        /* Common Slide Styles */
+        .slide-header {
+            margin-bottom: 50px;
+        }
+
+        .slide-header h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .slide-header h2 span {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-header p {
+            font-size: 1.2rem;
+            color: var(--muted);
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .content-text {
+            flex: 1;
+        }
+
+        .content-image {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-image img {
+            max-width: 100%;
+            max-height: 450px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            flex: 1;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Steps */
+        .steps-container {
+            display: flex;
+            gap: 40px;
+            flex: 1;
+            align-items: center;
+        }
+
+        .steps-list {
+            flex: 1;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            margin-bottom: 35px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #6366f1, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tech Stack */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .tech-category {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .tech-category h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tech-item {
+            padding: 10px 20px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Business Plan Sections */
+        .plan-sections {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .plan-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .plan-section-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .plan-section h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .plan-section p {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* Thank You Slide */
+        .slide-thank-you {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #0c4a6e 100%);
+        }
+
+        .slide-thank-you::before {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, transparent 60%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .slide-thank-you h2 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #0ea5e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-thank-you .contact-info {
+            font-size: 1.3rem;
+            color: var(--muted);
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-thank-you .cta-button {
+            padding: 20px 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .slide-thank-you .cta-button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn {
+            width: 45px;
+            height: 45px;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .slide-counter {
+            font-size: 0.9rem;
+            color: var(--muted);
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .slide-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--primary);
+            width: 30px;
+            border-radius: 10px;
+        }
+
+        /* Decorative Elements */
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: -100px;
+            right: -100px;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: var(--secondary);
+            bottom: -50px;
+            left: -50px;
+        }
+
+        /* Lists */
+        .bullet-list {
+            list-style: none;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 18px;
+            font-size: 1.1rem;
+            color: #e2e8f0;
+        }
+
+        .bullet-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .slide-number {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 0.85rem;
+            color: var(--muted);
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="presentation">
+
+        <!-- Slide 1: Title -->
+        <div class="slide slide-title active" data-slide="1">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <h1>NexusBiz</h1>
+            <h2>AI-Powered Business Idea Generator</h2>
+            <div class="tagline">🚀 Transform Ideas into Actionable Business Plans</div>
+            <span class="slide-number">01 / 10</span>
+        </div>
+
+        <!-- Slide 2: Project Overview -->
+        <div class="slide" data-slide="2">
+            <div class="gradient-orb orb-1"></div>
+            <div class="slide-header">
+                <h2>Project <span>Overview</span></h2>
+                <p>Building the future of entrepreneurship with AI</p>
+            </div>
+            <div class="slide-content two-column">
+                <div class="content-text">
+                    <ul class="bullet-list">
+                        <li>Full-stack AI-powered business intelligence platform</li>
+                        <li>Generates personalized business ideas based on your skills, budget & market</li>
+                        <li>Creates comprehensive business plans with financial projections</li>
+                        <li>Modern glassmorphic UI with stunning animations</li>
+                        <li>Real-time AI processing with Anthropic Claude / Ollama</li>
+                        <li>Export business plans to PDF for presentations</li>
+                    </ul>
+                </div>
+                <div class="content-image">
+                    <img src="presentation_images/hero.png" alt="NexusBiz Hero">
+                </div>
+            </div>
+            <span class="slide-number">02 / 10</span>
+        </div>
+
+        <!-- Slide 3: Key Features -->
+        <div class="slide" data-slide="3">
+            <div class="gradient-orb orb-2"></div>
+            <div class="slide-header">
+                <h2>Key <span>Features</span></h2>
+                <p>Everything you need to launch your business empire</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>AI-Powered Ideas</h3>
+                    <p>Advanced algorithms curate personalized business concepts based on market potential and your
+                        unique profile.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Complete Business Plans</h3>
+                    <p>Go from concept to execution with comprehensive structural frameworks and actionable strategies.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Financial Projections</h3>
+                    <p>Data-driven 3-year forecasting for revenue, expenses, and profitability analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Marketing Strategy</h3>
+                    <p>Targeted customer acquisition plans and brand positioning for your specific industry.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>Operations Planning</h3>
+                    <p>Detailed workflows and resource requirements to streamline backend operations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Idea Comparison</h3>
+                    <p>Compare up to 3 business ideas side-by-side to make informed decisions.</p>
+                </div>
+            </div>
+            <span class="slide-number">03 / 10</span>
+        </div>
+
+        <!-- Slide 4: How It Works - Wizard -->
+        <div class="slide" data-slide="4">
+            <div class="gradient-orb orb-1"></div>
+            <div class="slide-header">
+                <h2>How It <span>Works</span></h2>
+                <p>4-step intelligent wizard to generate your perfect business idea</p>
+            </div>
+            <div class="steps-container">
+                <div class="steps-list">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Market Analysis</h4>
+                            <p>Select your industry, budget range, location, and timeline preferences</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Skills Assessment</h4>
+                            <p>Define your skills, available resources, and risk tolerance level</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Strategy Planning</h4>
+                            <p>Choose business model (B2B/B2C), target market size, and innovation level</p>
+                        </div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Launch Configuration</h4>
+                            <p>Review settings and generate AI-powered business ideas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-image">
+                    <img src="presentation_images/wizard.png" alt="Wizard Steps">
+                </div>
+            </div>
+            <span class="slide-number">04 / 10</span>
+        </div>
+
+        <!-- Slide 5: Results Dashboard -->
+        <div class="slide" data-slide="5">
+            <div class="gradient-orb orb-2"></div>
+            <div class="slide-header">
+                <h2>Results <span>Dashboard</span></h2>
+                <p>AI-synthesized business concepts in a beautiful bento grid layout</p>
+            </div>
+            <div class="slide-content two-column">
+                <div class="content-text">
+                    <ul class="bullet-list">
+                        <li><strong>Bento Grid Layout:</strong> High-density display for quick scanning</li>
+                        <li><strong>Glassmorphic Cards:</strong> Modern aesthetic with blur effects</li>
+                        <li><strong>Real-time Search:</strong> Instantly filter business concepts</li>
+                        <li><strong>Sort & Filter:</strong> By relevance, investment, or difficulty</li>
+                        <li><strong>Compare Mode:</strong> Select up to 3 ideas for side-by-side comparison</li>
+                        <li><strong>Market Sentiment:</strong> Live success rate and risk analysis</li>
+                        <li><strong>Interactive Onboarding:</strong> Guided tour for new users</li>
+                    </ul>
+                </div>
+                <div class="content-image">
+                    <img src="presentation_images/dashboard.png" alt="Dashboard">
+                </div>
+            </div>
+            <span class="slide-number">05 / 10</span>
+        </div>
+
+        <!-- Slide 6: Business Plan Generator -->
+        <div class="slide" data-slide="6">
+            <div class="gradient-orb orb-1"></div>
+            <div class="slide-header">
+                <h2>Business Plan <span>Generator</span></h2>
+                <p>Comprehensive architectural specification for your business</p>
+            </div>
+            <div class="plan-sections">
+                <div class="plan-section">
+                    <div class="plan-section-icon">📋</div>
+                    <h4>Executive Summary</h4>
+                    <p>Strategic overview and value proposition</p>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-icon">🎯</div>
+                    <h4>Market Analysis</h4>
+                    <p>Trends, competitors, and opportunities</p>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-icon">📈</div>
+                    <h4>Financial Projections</h4>
+                    <p>3-year revenue forecasting with charts</p>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-icon">📢</div>
+                    <h4>Marketing Strategy</h4>
+                    <p>Customer acquisition and branding</p>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-icon">🚛</div>
+                    <h4>Operations</h4>
+                    <p>Logistics and production planning</p>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-icon">💻</div>
+                    <h4>Technology</h4>
+                    <p>Required tech stack and infrastructure</p>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-icon">⚖️</div>
+                    <h4>Legal & HR</h4>
+                    <p>Compliance and team structure</p>
+                </div>
+                <div class="plan-section">
+                    <div class="plan-section-icon">📅</div>
+                    <h4>Timeline & Risk</h4>
+                    <p>Implementation roadmap and mitigation</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <span
+                    style="padding: 15px 30px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 30px; font-weight: 700;">📥
+                    Export to PDF Available</span>
+            </div>
+            <span class="slide-number">06 / 10</span>
+        </div>
+
+        <!-- Slide 7: Financial Intelligence -->
+        <div class="slide" data-slide="7">
+            <div class="gradient-orb orb-2"></div>
+            <div class="slide-header">
+                <h2>Financial <span>Intelligence</span></h2>
+                <p>Data-driven projections and analytics</p>
+            </div>
+            <div class="slide-content two-column">
+                <div class="content-image">
+                    <img src="presentation_images/financial.png" alt="Financial Charts">
+                </div>
+                <div class="content-text">
+                    <ul class="bullet-list">
+                        <li><strong>3-Year Revenue Forecast:</strong> Interactive area charts with Year 1, 2, 3
+                            projections</li>
+                        <li><strong>Breakeven Analysis:</strong> Calculated timeline to profitability</li>
+                        <li><strong>CapEx Requirements:</strong> Initial investment breakdown</li>
+                        <li><strong>Estimated Valuation:</strong> Year 3 business valuation</li>
+                        <li><strong>Quarterly Projections:</strong> Detailed Q1-Q6 revenue mapping</li>
+                        <li><strong>Visual Analytics:</strong> Beautiful charts powered by Recharts</li>
+                    </ul>
+                </div>
+            </div>
+            <span class="slide-number">07 / 10</span>
+        </div>
+
+        <!-- Slide 8: Technology Stack -->
+        <div class="slide" data-slide="8">
+            <div class="gradient-orb orb-1"></div>
+            <div class="slide-header">
+                <h2>Technology <span>Stack</span></h2>
+                <p>Enterprise-grade architecture for reliability and performance</p>
+            </div>
+            <div class="slide-content two-column">
+                <div class="content-text">
+                    <div class="tech-grid">
+                        <div class="tech-category">
+                            <h4>Frontend</h4>
+                            <div class="tech-list">
+                                <span class="tech-item">React 18</span>
+                                <span class="tech-item">TypeScript</span>
+                                <span class="tech-item">Vite</span>
+                                <span class="tech-item">Tailwind CSS</span>
+                                <span class="tech-item">Framer Motion</span>
+                            </div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>Backend</h4>
+                            <div class="tech-list">
+                                <span class="tech-item">Node.js</span>
+                                <span class="tech-item">Express.js</span>
+                                <span class="tech-item">TypeScript</span>
+                                <span class="tech-item">Zod</span>
+                            </div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>AI / ML</h4>
+                            <div class="tech-list">
+                                <span class="tech-item">Anthropic Claude</span>
+                                <span class="tech-item">Ollama</span>
+                                <span class="tech-item">Groq API</span>
+                            </div>
+                        </div>
+                        <div class="tech-category">
+                            <h4>Tools & Security</h4>
+                            <div class="tech-list">
+                                <span class="tech-item">Winston Logger</span>
+                                <span class="tech-item">Helmet</span>
+                                <span class="tech-item">Rate Limiting</span>
+                                <span class="tech-item">CORS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-image">
+                    <img src="presentation_images/brain.png" alt="AI Brain">
+                </div>
+            </div>
+            <span class="slide-number">08 / 10</span>
+        </div>
+
+        <!-- Slide 9: Impact & Statistics -->
+        <div class="slide" data-slide="9">
+            <div class="gradient-orb orb-2"></div>
+            <div class="slide-header">
+                <h2>Impact & <span>Statistics</span></h2>
+                <p>Designed to empower entrepreneurs worldwide</p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">1.2M+</div>
+                    <div class="stat-label">Ideas Generated</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">45k+</div>
+                    <div class="stat-label">Businesses Launched</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">89%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$3.4B</div>
+                    <div class="stat-label">Market Value</div>
+                </div>
+            </div>
+            <div style="margin-top: 60px;">
+                <ul class="bullet-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <li>Multi-language support (i18n ready)</li>
+                    <li>Light/Dark theme switching</li>
+                    <li>Responsive design for all devices</li>
+                    <li>Vercel deployment ready</li>
+                    <li>API rate limiting for security</li>
+                    <li>PDF export functionality</li>
+                </ul>
+            </div>
+            <span class="slide-number">09 / 10</span>
+        </div>
+
+        <!-- Slide 10: Thank You -->
+        <div class="slide slide-thank-you" data-slide="10">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <h2>Thank You!</h2>
+            <p class="contact-info">Ready to build your next business empire?</p>
+            <a href="https://nexus-biz.vercel.app/" target="_blank" class="cta-button" style="text-decoration: none;">🚀
+                Start Building with NexusBiz</a>
+            <div style="margin-top: 60px; position: relative; z-index: 1;">
+                <p style="color: var(--muted); font-size: 1rem;">© 2026 NexusBiz | AI Business Generator</p>
+                <p style="color: var(--muted); font-size: 0.9rem; margin-top: 10px;">Created by NexusPrime Team</p>
+            </div>
+            <span class="slide-number">10 / 10</span>
+        </div>
+
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">←</button>
+        <div class="slide-dots" id="slideDots"></div>
+        <span class="slide-counter" id="slideCounter">1 / 10</span>
+        <button class="nav-btn" onclick="nextSlide()">→</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 10;
+
+        // Initialize dots
+        const dotsContainer = document.getElementById('slideDots');
+        for (let i = 1; i <= totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = `dot ${i === 1 ? 'active' : ''}`;
+            dot.onclick = () => goToSlide(i);
+            dotsContainer.appendChild(dot);
+        }
+
+        function updateSlide() {
+            // Update slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+                if (parseInt(slide.dataset.slide) === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            // Update counter
+            document.getElementById('slideCounter').textContent = `${currentSlide} / ${totalSlides}`;
+
+            // Update dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index + 1 === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlide();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'Home') {
+                goToSlide(1);
+            } else if (e.key === 'End') {
+                goToSlide(totalSlides);
+            }
+        });
+    </script>
+</body>
+
+</html>

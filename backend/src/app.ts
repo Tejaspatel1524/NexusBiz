@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import ideaRoutes from './routes/ideaRoutes';
 import businessPlanRoutes from './routes/businessPlanRoutes';
 import ollamaRoutes from './routes/ollamaRoutes';
+import authRoutes from './routes/authRoutes'; // NEW: Authentication routes
 import ideaController from './controllers/ideaController';
 import { errorHandler } from './middleware/errorHandler';
 import { generalLimiter } from './middleware/rateLimiter';
@@ -52,6 +53,7 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/api/ideas', ideaRoutes);
 app.use('/api/business-plan', businessPlanRoutes);
 app.use('/api/ai/ollama', ollamaRoutes);
+app.use('/api/auth', authRoutes); // NEW: Authentication routes
 
 // Industries endpoint
 app.get('/api/industries', generalLimiter, ideaController.getIndustries.bind(ideaController));
