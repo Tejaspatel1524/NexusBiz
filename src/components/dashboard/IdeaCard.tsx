@@ -51,47 +51,46 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
                 isCompareMode && isSelected && "ring-2 ring-indigo-500 ring-offset-2 ring-offset-transparent",
                 isCompareMode && !canSelect && "opacity-50",
                 className
-                >
-                {/* Background Accent */ }
-                < div className = "absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity" >
-                <Briefcase size={120} />
-            </div >
-
-    {/* Compare Mode Selection Checkbox */ }
-{
-    isCompareMode && (
-        <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className={cn(
-                "absolute top-4 left-4 w-8 h-8 rounded-lg flex items-center justify-center z-20 cursor-pointer transition-all",
-                isSelected
-                    ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30"
-                    : "bg-theme-tertiary/80 text-theme-muted border border-theme hover:border-indigo-500"
             )}
         >
-            {isSelected && <Check size={16} strokeWidth={3} />}
-        </motion.div>
-    )
-}
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                <Briefcase size={120} />
+            </div>
 
-{/* Bookmark Button */ }
-<motion.button
-    onClick={handleBookmark}
-    className={cn(
-        "absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center z-20 transition-all",
-        isSaved
-            ? "bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg shadow-amber-500/30"
-            : "bg-theme-tertiary/50 text-theme-muted hover:text-white hover:bg-theme-tertiary"
-    )}
-    whileHover={{ scale: 1.1 }}
-    whileTap={{ scale: 0.9 }}
-    title={isSaved ? "Remove from saved" : "Save for later"}
->
-    <Bookmark size={18} fill={isSaved ? "currentColor" : "none"} />
-</motion.button>
+            {/* Compare Mode Selection Checkbox */}
+            {isCompareMode && (
+                <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className={cn(
+                        "absolute top-4 left-4 w-8 h-8 rounded-lg flex items-center justify-center z-20 cursor-pointer transition-all",
+                        isSelected
+                            ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30"
+                            : "bg-theme-tertiary/80 text-theme-muted border border-theme hover:border-indigo-500"
+                    )}
+                >
+                    {isSelected && <Check size={16} strokeWidth={3} />}
+                </motion.div>
+            )}
 
-{/* Success Score Badge - positioned top right after bookmark */ }
+            {/* Bookmark Button */}
+            <motion.button
+                onClick={handleBookmark}
+                className={cn(
+                    "absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center z-20 transition-all",
+                    isSaved
+                        ? "bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-lg shadow-amber-500/30"
+                        : "bg-theme-tertiary/50 text-theme-muted hover:text-white hover:bg-theme-tertiary"
+                )}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                title={isSaved ? "Remove from saved" : "Save for later"}
+            >
+                <Bookmark size={18} fill={isSaved ? "currentColor" : "none"} />
+            </motion.button>
+
+            {/* Success Score Badge - positioned top right after bookmark */}
             <div className="absolute top-16 right-4 z-10">
                 <SuccessScoreBadge
                     score={successScore}
@@ -165,24 +164,23 @@ const IdeaCard: React.FC<IdeaCardProps> = ({ idea, onViewPlan, className }) => {
                 </motion.button>
             </div>
 
-{/* Selection Overlay for Compare Mode */ }
-{
-    isCompareMode && (
-        <div
-            className="absolute inset-0 z-30 cursor-pointer flex items-center justify-center bg-black/20 backdrop-blur-[1px] opacity-0 hover:opacity-100 transition-opacity"
-            onClick={(e) => {
-                e.stopPropagation();
-                canSelect && toggleIdeaSelection(idea);
-            }}
-        >
-            <div className={`px-6 py-3 rounded-xl font-bold text-white shadow-xl transform scale-110 ${isSelected ? 'bg-red-500' : 'bg-indigo-600'}`}>
-                {isSelected ? 'Deselect Idea' : 'Select to Compare'}
-            </div>
+            {/* Selection Overlay for Compare Mode */}
+            {isCompareMode && (
+                <div
+                    className="absolute inset-0 z-30 cursor-pointer flex items-center justify-center bg-black/20 backdrop-blur-[1px] opacity-0 hover:opacity-100 transition-opacity"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        canSelect && toggleIdeaSelection(idea);
+                    }}
+                >
+                    <div className={`px-6 py-3 rounded-xl font-bold text-white shadow-xl transform scale-110 ${isSelected ? 'bg-red-500' : 'bg-indigo-600'}`}>
+                        {isSelected ? 'Deselect Idea' : 'Select to Compare'}
+                    </div>
+                </div>
+            )}
         </div>
-    )
-}
-        </div >
     );
 };
 
 export default IdeaCard;
+
