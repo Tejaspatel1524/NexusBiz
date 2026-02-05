@@ -11,7 +11,8 @@ interface SparklineChartProps {
 }
 
 /**
- * Generate sample revenue data based on investment and timeline
+ * Generate realistic revenue data based on investment and timeline
+ * Uses industry-standard growth curves with realistic startup patterns
  * @param investment - Investment string like "$250,000"
  * @param timeline - Timeline string like "12 months"
  * @returns Array of 6 quarterly revenue projections
@@ -31,19 +32,48 @@ export const generateRevenueData = (investment: string, timeline: string): numbe
     const timeMatch = timeline.match(/(\d+)/);
     if (timeMatch) months = parseInt(timeMatch[1]);
 
-    // Generate 6 quarters of revenue projection
-    // Base revenue starts at 10% of investment and grows exponentially
-    const baseRevenue = investmentAmount * 0.1;
-    const growthFactor = months <= 6 ? 1.4 : months <= 12 ? 1.25 : 1.15;
+    // Create a seed from investment for consistent "random" variation per idea
+    const seed = investmentAmount % 100;
 
+    // Realistic startup revenue patterns based on investment tier
+    // Tier 1: Small ($10K-$50K) - Slower growth, bootstrapped
+    // Tier 2: Medium ($50K-$200K) - Moderate growth, some runway
+    // Tier 3: Large ($200K+) - Faster scaling with proper funding
+
+    let monthlyGrowthRate: number;
+    let initialRevenuePercent: number;
+
+    if (investmentAmount < 50000) {
+        monthlyGrowthRate = 0.08 + (seed / 1000); // 8-18% monthly growth
+        initialRevenuePercent = 0.03; // Start at 3% of investment
+    } else if (investmentAmount < 200000) {
+        monthlyGrowthRate = 0.12 + (seed / 1000); // 12-22% monthly growth
+        initialRevenuePercent = 0.05; // Start at 5% of investment
+    } else {
+        monthlyGrowthRate = 0.15 + (seed / 1000); // 15-25% monthly growth
+        initialRevenuePercent = 0.08; // Start at 8% of investment
+    }
+
+    // Adjust growth based on timeline aggressiveness
+    if (months <= 6) {
+        monthlyGrowthRate *= 1.2; // Aggressive short timeline
+    } else if (months >= 18) {
+        monthlyGrowthRate *= 0.8; // Conservative long timeline
+    }
+
+    // Generate 6 data points (representing quarters or bi-monthly)
     const data: number[] = [];
-    let currentRevenue = baseRevenue;
+    let currentRevenue = investmentAmount * initialRevenuePercent;
 
     for (let i = 0; i < 6; i++) {
-        // Add some realistic variation (±10%)
-        const variation = 0.9 + Math.random() * 0.2;
+        // S-curve growth pattern - slower start, acceleration, then plateau
+        const growthMultiplier = i < 2 ? 0.7 : i < 4 ? 1.0 : 0.85;
+        const quarterGrowth = Math.pow(1 + monthlyGrowthRate * growthMultiplier, 2); // 2 months per point
+
+        // Add realistic variation (±5%)
+        const variation = 0.95 + ((seed + i * 17) % 100) / 1000;
         data.push(Math.round(currentRevenue * variation));
-        currentRevenue *= growthFactor;
+        currentRevenue *= quarterGrowth;
     }
 
     return data;

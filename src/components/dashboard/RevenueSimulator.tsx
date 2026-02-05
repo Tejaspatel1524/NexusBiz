@@ -54,12 +54,17 @@ const RevenueSimulator: React.FC<RevenueSimulatorProps> = ({
 
     const baseInvestment = useMemo(() => parseInvestment(investmentNeeded), [investmentNeeded]);
 
-    // Default simulation parameters based on investment
-    const [params, setParams] = useState<SimulationParams>({
-        price: Math.round(baseInvestment * 0.01),
-        customersPerMonth: 20,
-        monthlyExpenses: Math.round(baseInvestment * 0.05),
-        growthRate: 15
+    // Default simulation parameters based on investment - realistic startup projections
+    const [params, setParams] = useState<SimulationParams>(() => {
+        const investment = parseInvestment(investmentNeeded);
+        // Realistic defaults based on investment tier
+        if (investment < 50000) {
+            return { price: 49, customersPerMonth: 8, monthlyExpenses: 3000, growthRate: 8 };
+        } else if (investment < 150000) {
+            return { price: 99, customersPerMonth: 15, monthlyExpenses: 8000, growthRate: 10 };
+        } else {
+            return { price: 199, customersPerMonth: 25, monthlyExpenses: 15000, growthRate: 12 };
+        }
     });
 
     // Generate 12-month projection data
