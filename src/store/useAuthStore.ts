@@ -182,6 +182,12 @@ export const useAuthStore = create<AuthState>()(
                 });
                 // Clear from localStorage explicitly
                 localStorage.removeItem('nexusbiz-auth');
+
+                // Notify service worker to clear auth cache
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'LOGOUT' });
+                }
+
                 console.log('User logged out');
             },
 
@@ -233,14 +239,28 @@ export const useAuthStore = create<AuthState>()(
                         localStorage.removeItem('nexusbiz-auth');
                         console.log('Token expired, cleared auth');
                     }
-                } catch {
-                    // Network error, clear auth to be safe
-                    set({
-                        user: null,
-                        token: null,
-                        isLoading: false,
-                        isInitialized: true,
-                    });
+                } catch (error: any) {
+                    // Network error - check if offline
+                    const isOffline = !navigator.onLine || error?.offline;
+
+                    if (isOffline) {
+                        // Offline: Keep existing user data from localStorage if available
+                        // User stays "logged in" with cached data
+                        console.log('Offline mode - keeping cached auth state');
+                        set({
+                            isLoading: false,
+                            isInitialized: true,
+                            error: 'You are offline. Some features may be limited.',
+                        });
+                    } else {
+                        // Real error - clear auth
+                        set({
+                            user: null,
+                            token: null,
+                            isLoading: false,
+                            isInitialized: true,
+                        });
+                    }
                 }
             },
 
