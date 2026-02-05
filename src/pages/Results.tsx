@@ -6,6 +6,7 @@ import { useBusinessStore } from '../store/useBusinessStore';
 import { useComparisonStore } from '../store/useComparisonStore';
 import IdeaCard from '../components/dashboard/IdeaCard';
 import ComparisonModal from '../components/dashboard/ComparisonModal';
+import WeeklyTips from '../components/dashboard/WeeklyTips';
 import Button from '../components/common/Button';
 import { PlanSkeleton } from '../components/common/Skeleton';
 import AnimatedCounter from '../components/common/AnimatedCounter';
@@ -197,6 +198,11 @@ const Results: React.FC = () => {
                                     </span>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Weekly Tips Card */}
+                        <div className="md:col-span-6 lg:col-span-4" style={{ animationDelay: '0.25s' }}>
+                            <WeeklyTips />
                         </div>
 
                         {/* Generated Concepts Counter */}

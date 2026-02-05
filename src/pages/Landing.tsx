@@ -61,6 +61,23 @@ const Landing: React.FC = () => {
         { label: 'Market Value', value: '$3.4B' }
     ];
 
+    // Industry verticals for focused messaging
+    const verticals = [
+        { name: 'SaaS & Tech', emoji: '💻', desc: 'Build the next unicorn startup', color: 'from-indigo-500 to-purple-500' },
+        { name: 'E-Commerce', emoji: '🛒', desc: 'Launch your online empire', color: 'from-pink-500 to-orange-500' },
+        { name: 'Health & Wellness', emoji: '🏥', desc: 'Innovate in healthcare', color: 'from-green-500 to-teal-500' },
+        { name: 'FinTech', emoji: '💰', desc: 'Disrupt traditional finance', color: 'from-blue-500 to-cyan-500' },
+        { name: 'EdTech', emoji: '📚', desc: 'Transform education', color: 'from-purple-500 to-pink-500' },
+        { name: 'Sustainability', emoji: '🌱', desc: 'Build a greener future', color: 'from-emerald-500 to-green-500' }
+    ];
+
+    // Industry testimonials
+    const testimonials = [
+        { name: 'Sarah Chen', role: 'Founder, TechFlow', quote: 'NexusBiz helped me validate my SaaS idea in 2 days. The revenue projections were spot-on.', industry: 'SaaS', avatar: '👩‍💻' },
+        { name: 'Marcus Rivera', role: 'CEO, ShopLocal', quote: "The action checklist kept me focused. Launched my e-commerce store in 6 weeks.", industry: 'E-Commerce', avatar: '👨‍💼' },
+        { name: 'Dr. Priya Sharma', role: 'Founder, HealthBridge', quote: 'The market validation data gave me confidence to pursue my telehealth startup.', industry: 'HealthTech', avatar: '👩‍⚕️' }
+    ];
+
     return (
         <div className="relative min-h-screen overflow-hidden">
             {/* Liquid Background */}
@@ -194,6 +211,96 @@ const Landing: React.FC = () => {
                                         <div className="flex items-center text-indigo-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                                             <span>Learn More</span>
                                             <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Industry Verticals Section */}
+                <section className="relative py-24 px-4">
+                    <div className="max-w-6xl mx-auto">
+                        <motion.div
+                            className="text-center mb-16"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            <h2 className="text-4xl md:text-5xl font-black mb-4 text-theme-primary">
+                                Built for <span className="gradient-text">Every Industry</span>
+                            </h2>
+                            <p className="text-theme-secondary max-w-xl mx-auto">
+                                Whether you're building a SaaS startup or launching an e-commerce store, we've got you covered.
+                            </p>
+                        </motion.div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                            {verticals.map((vertical, index) => (
+                                <motion.div
+                                    key={vertical.name}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    viewport={{ once: true }}
+                                    onClick={() => navigate('/generator')}
+                                    className="cursor-pointer group"
+                                >
+                                    <div className="liquid-glass p-6 text-center h-full hover:scale-105 transition-transform">
+                                        <div className="text-4xl mb-3">{vertical.emoji}</div>
+                                        <h3 className="text-sm font-bold text-theme-primary mb-1 group-hover:text-indigo-400 transition-colors">
+                                            {vertical.name}
+                                        </h3>
+                                        <p className="text-[10px] text-theme-muted">{vertical.desc}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Testimonials Section */}
+                <section className="relative py-24 px-4">
+                    <div className="max-w-6xl mx-auto">
+                        <motion.div
+                            className="text-center mb-16"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            <h2 className="text-4xl md:text-5xl font-black mb-4 text-theme-primary">
+                                Trusted by <span className="gradient-text">Founders</span>
+                            </h2>
+                            <p className="text-theme-secondary max-w-xl mx-auto">
+                                See what entrepreneurs are saying about NexusBiz
+                            </p>
+                        </motion.div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {testimonials.map((testimonial, index) => (
+                                <motion.div
+                                    key={testimonial.name}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <div className="liquid-glass p-8 h-full">
+                                        <div className="flex items-center gap-4 mb-6">
+                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-2xl">
+                                                {testimonial.avatar}
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-theme-primary">{testimonial.name}</h4>
+                                                <p className="text-xs text-theme-muted">{testimonial.role}</p>
+                                            </div>
+                                        </div>
+                                        <p className="text-theme-secondary text-sm leading-relaxed italic">
+                                            "{testimonial.quote}"
+                                        </p>
+                                        <div className="mt-4 inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 text-indigo-400">
+                                            {testimonial.industry}
                                         </div>
                                     </div>
                                 </motion.div>

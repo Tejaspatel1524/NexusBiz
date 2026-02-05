@@ -9,14 +9,19 @@ interface SavedIdea {
     investmentNeeded: string;
     timeline: string;
     savedAt: number;
+    // Checklist progress for this idea
+    completedSteps: string[];
 }
 
 interface SavedIdeasState {
     savedIdeas: SavedIdea[];
-    saveIdea: (idea: SavedIdea) => void;
+    saveIdea: (idea: Omit<SavedIdea, 'completedSteps'>) => void;
     unsaveIdea: (id: string) => void;
     isIdeaSaved: (id: string) => boolean;
     getSavedIdeas: () => SavedIdea[];
+    // Checklist methods
+    toggleChecklistStep: (ideaId: string, stepId: string) => void;
+    getCompletedSteps: (ideaId: string) => string[];
 }
 
 export const useSavedIdeasStore = create<SavedIdeasState>()(
@@ -30,7 +35,7 @@ export const useSavedIdeasStore = create<SavedIdeasState>()(
                     set({
                         savedIdeas: [
                             ...savedIdeas,
-                            { ...idea, savedAt: Date.now() }
+                            { ...idea, savedAt: Date.now(), completedSteps: [] }
                         ]
                     });
                 }
@@ -48,6 +53,31 @@ export const useSavedIdeasStore = create<SavedIdeasState>()(
 
             getSavedIdeas: () => {
                 return get().savedIdeas.sort((a, b) => b.savedAt - a.savedAt);
+            },
+
+            // Toggle a checklist step for a specific idea
+            toggleChecklistStep: (ideaId, stepId) => {
+                set({
+                    savedIdeas: get().savedIdeas.map((idea) => {
+                        if (idea.id !== ideaId) return idea;
+
+                        const completedSteps = idea.completedSteps || [];
+                        const isCompleted = completedSteps.includes(stepId);
+
+                        return {
+                            ...idea,
+                            completedSteps: isCompleted
+                                ? completedSteps.filter(s => s !== stepId)
+                                : [...completedSteps, stepId]
+                        };
+                    })
+                });
+            },
+
+            // Get completed steps for an idea
+            getCompletedSteps: (ideaId) => {
+                const idea = get().savedIdeas.find(i => i.id === ideaId);
+                return idea?.completedSteps || [];
             }
         }),
         {

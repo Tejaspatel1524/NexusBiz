@@ -11,7 +11,8 @@ import {
     Cpu,
     Truck,
     Gavel,
-    History
+    History,
+    ListChecks
 } from 'lucide-react';
 import {
     ResponsiveContainer,
@@ -24,13 +25,18 @@ import {
     Legend
 } from 'recharts';
 import { useBusinessStore } from '../store/useBusinessStore';
+import { useSavedIdeasStore } from '../store/useSavedIdeasStore';
 import Button from '../components/common/Button';
 import { generateBusinessPlanPDF } from '../utils/pdfExport';
+import RevenueSimulator from '../components/dashboard/RevenueSimulator';
+import ActionChecklist from '../components/dashboard/ActionChecklist';
+import ValidationCard from '../components/dashboard/ValidationCard';
 
 const BusinessPlan: React.FC = () => {
     useParams();
     const navigate = useNavigate();
     const { selectedPlan } = useBusinessStore();
+    const { toggleChecklistStep, getCompletedSteps } = useSavedIdeasStore();
     const [activeTab, setActiveTab] = useState('summary');
 
     if (!selectedPlan) {
@@ -48,6 +54,7 @@ const BusinessPlan: React.FC = () => {
 
     const tabs = [
         { id: 'summary', label: 'Executive Summary', icon: FileText },
+        { id: 'action', label: 'Action Plan', icon: ListChecks },
         { id: 'market', label: 'Market Analysis', icon: Target },
         { id: 'financials', label: 'Financial Projections', icon: TrendingUp },
         { id: 'marketing', label: 'Marketing Strategy', icon: BarChart3 },
@@ -133,6 +140,32 @@ const BusinessPlan: React.FC = () => {
                                     <p className="text-theme-secondary text-lg leading-relaxed">
                                         This strategic directive outlines the deployment of <span className="text-blue font-bold">{selectedPlan.title}</span>, a high-performance business unit designed to capture significant market share in the {selectedPlan.marketAnalysis.overview.split('market')[0]} sector through technical superiority and operational efficiency.
                                     </p>
+                                </div>
+                            )}
+
+                            {activeTab === 'action' && (
+                                <div className="space-y-8 relative z-10">
+                                    <div className="space-y-4">
+                                        <h2 className="text-3xl font-black uppercase tracking-tighter">Action Plan</h2>
+                                        <div className="w-20 h-1.5 bg-blue rounded-full" />
+                                        <p className="text-theme-secondary">Your personalized roadmap with revenue projections and step-by-step checklist.</p>
+                                    </div>
+
+                                    {/* Revenue Simulator */}
+                                    <RevenueSimulator
+                                        investmentNeeded="$250,000"
+                                        timeline="12 months"
+                                    />
+
+                                    {/* Action Checklist */}
+                                    <ActionChecklist
+                                        ideaId={selectedPlan.id}
+                                        completedSteps={getCompletedSteps(selectedPlan.id)}
+                                        onToggleStep={(stepId) => toggleChecklistStep(selectedPlan.id, stepId)}
+                                    />
+
+                                    {/* Validation Data */}
+                                    <ValidationCard industry={selectedPlan.marketAnalysis.overview.split(' ')[0]} />
                                 </div>
                             )}
 
